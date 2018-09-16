@@ -1,0 +1,191 @@
+# Intro
+[kubernetes-pfsense-controller (kpc)](https://github.com/travisghansen/kubernetes-pfsense-controller) works hard to keep
+[pfSense](https://www.pfsense.org/) and [Kubernetes](https://kubernetes.io/) in sync and harmony.  The primary focus is
+to facilitate a first-class Kubernetes cluster by integrating and/or implementing features that generally do not come
+with bare-metal installation(s).
+
+This is generally achieved using the standard Kubernetes API along with the xmlrpc API for pfSense.  Speaking generally
+the Kubernetes API is `watch`ed and then updates to the pfSense `config.xml` are sent via xmlrpc calls along with
+appropriate reload/restart/update/sync methods to apply changes.
+
+Disclaimer: this is new software bound to have bugs.  Please make a backup before using it as it may eat your
+configuration.  Having said that, all known code paths appear to be solid and work without issue.  If you find a bug,
+please report it! 
+
+# Plugins
+The controller is comprised of several plugins that are enabled/disabled/configured via a Kubernetes ConfigMap.  Details
+about each plugin follows below.
+
+## metallb
+[MetalLB](https://metallb.universe.tf/) implements `LoadBalancer` type `Service`s in Kubernetes.  This is done via any
+combination of Layer2 or BGP type configurations.  Layer2 only requires no integration with pfSense, however, if you
+want to leverage the BGP implementation you need a BGP server along with neighbor configuration.  `kpc` *dynamically*
+updates neighbors for you in pfSense by continually monitoring cluster `Node`s.
+
+The plugin assumes you've already installed openbgp and configured it as well as created a `group` to use with MetalLB.
+
+```yaml
+      metallb:
+        enabled: true
+        nodeLabelSelector:
+        nodeFieldSelector:
+        bgp-implementation: openbgp
+        options:
+          openbgp:
+            template:
+              md5sigkey:
+              md5sigpass:
+              groupname: metallb
+              row:
+                - parameters: announce all
+                  parmvalue:
+```
+
+## haproxy-declarative
+`haproxy-declarative` plugin allows you to *mostly* statically create HAProxy frontend/backend definitions as
+`ConfigMap` resources in the cluster.  When declaring backends however, the pool of servers can (will) be dynamically
+created/update based on cluster nodes.  See deploy/example-foo.yaml for an example.
+ 
+```yaml
+      haproxy-declarative:
+        enabled: true
+```
+
+## haproxy-ingress-proxy
+`haproxy-ingress-proxy` plugin allows you to mirror cluster ingress rules handled by an ingress controller to HAProxy
+running on pfSense.  If you run pfSense on the network edge with non-cluster services already running, you now can
+dynamically inject new rules to route traffic into your cluster while simultaneously running non-cluster services.
+
+Combined with `haproxy-declarative` you can create a dynamic backend service (ie: your ingress controller) and
+subsequently dynamic frontend services based off of cluster ingresses.
+
+```yaml
+      haproxy-ingress-proxy:
+        enabled: true
+        ingressLabelSelector:
+        ingressFieldSelector:
+        defaultFrontend: http-80
+        defaultBackend: traefik
+        #allowedHostRegex: "/.*/"
+```
+
+## DNS Helpers
+`kpc` provides various options to manage DNS entries in pfSense based on cluster state.  Note that these options can be
+used in place of or in conjunction with [external-dns](https://github.com/kubernetes-incubator/external-dns) to support
+powerful setups/combinations.
+
+### pfsense-dns-services
+`pfsense-dns-services` watches for services of type `LoadBalancer` that have the annotation `dns.pfsense.org/hostname`
+with the value of the desired hostname.  `kpc` will create the DNS entry in unbound/dnsmasq.  Note that to actually get
+an IP on these services you'll likely need `MetalLB` deployed in the cluster (regardless of the `metallb` plugin running
+or not).
+
+```yaml
+      pfsense-dns-services:
+        enabled: true
+        serviceLabelSelector:
+        serviceFieldSelector:
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+```
+
+### pfsense-dns-ingresses
+`pfsense-dns-ingresses` watches ingress and automatically creates DNS entries in unbound/dnsmasq.
+`kpc` will create the DNS entry in unbound/dnsmasq.  This requires proper support from the ingress controller to set IPs
+on the ingress resources.
+
+```yaml
+      pfsense-dns-ingresses:
+        enabled: true
+        ingressLabelSelector:
+        ingressFieldSelector:
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+```
+
+### pfsense-dns-haproxy-ingress-proxy
+`pfsense-dns-haproxy-ingress-proxy` monitors the HAProxy rules created by the `haproxy-ingress-proxy` plugin and creates
+host aliases for each entry.  To do so you create an arbitrary host in unbound/dnsmasq (something like
+<frontend name>.k8s) and bind that host to the frontend through the config option `frontends.<frontend name>`.  Any
+proxy rules created for that frontend will now automatically get added as aliases to the configured `hostname`.  Make
+sure the static `hostname` created in your DNS service of choice points to the/an IP bound to the corresponding
+`frontend`.
+
+```yaml
+      pfsense-dns-haproxy-ingress-proxy:
+        enabled: true
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+        frontends:
+          http-80:
+            hostname: http-80.k8s
+          primary_frontend_name2:
+            hostname: primary_frontend_name2.k8s
+```
+
+# Notes
+`regex` parameters are passed through php's `preg_match()` method, you can test your syntax using that.  Also note that
+if you want to specify a regex ending (`$`), you must escape it in yaml as 2 `$`
+(ie: `#allowedHostRegex: "/.example.com$$/").
+
+`kpc` stores it's stateful data in the cluster as a ConfigMap (kube-system.pfsense-controller-store by default).  You
+review the data there to gain understanding into what the controller is managing.
+
+## Links
+ * https://medium.com/@ipuustin/using-metallb-as-kubernetes-load-balancer-with-ubiquiti-edgerouter-7ff680e9dca3
+ * https://miek.nl/2017/december/16/a-k8s-lb-using-arp/
+
+# TODO
+ 1. base64 advanced fields (haproxy)
+ 1. taint haproxy config so it shows 'apply' button in interface?
+ 1. _index and id management
+ 1. ssl certs name/serial
+ 1. build docker images
+ 1. create manifests
+ 1. ensure pfsync items are pushed as appropriate
+ 1. perform config rollbacks when appropriate?
+ 1. validate configuration(s) to ensure proper schema
+
+# Development
+
+## HAProxy
+XML config structure (note that `ha_backends` is actually frontends...it's badly named):
+```yaml
+haproxy
+   ha_backends
+     item
+     item
+     ...
+   ha_pools
+     item
+       ha_servers
+         item
+         item
+         ...
+     item
+     ...
+```
+
+### Links
+ * https://github.com/pfsense/FreeBSD-ports/blob/devel/net/pfSense-pkg-haproxy-devel/files/usr/local/pkg/haproxy/haproxy.inc
+
+## Links
+ * https://github.com/pfsense/pfsense/blob/master/src/usr/local/www/xmlrpc.php
+ * https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/v1.5/
+ * https://github.com/schematicon/validator-php
+ * https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
+ * https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/
+ * https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+ * https://github.com/MacFJA/PharBuilder

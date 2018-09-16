@@ -1,0 +1,915 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "1c8a0f7738ebc5e76c2d6fd5f7474e07",
+    "packages": [
+        {
+            "name": "container-interop/container-interop",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/container-interop/container-interop.git",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "shasum": ""
+            },
+            "require": {
+                "psr/container": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Interop\\Container\\": "src/Interop/Container/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
+            "homepage": "https://github.com/container-interop/container-interop",
+            "time": "2017-02-14T19:40:03+00:00"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v2.0.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "time": "2018-07-04T16:31:37+00:00"
+        },
+        {
+            "name": "psr/container",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "time": "2017-02-14T16:28:37+00:00"
+        },
+        {
+            "name": "travisghansen/kubernetes-client-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/travisghansen/kubernetes-client-php.git",
+                "reference": "fe374293faa07294386056bd857306d034a30e6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/fe374293faa07294386056bd857306d034a30e6a",
+                "reference": "fe374293faa07294386056bd857306d034a30e6a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-yaml": "*",
+                "php": ">=7.2.0"
+            },
+            "suggest": {
+                "ext-pcntl": "support forking of watches"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "KubernetesClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Travis Glenn Hansen"
+                }
+            ],
+            "description": "Kubernetes API client in PHP supporting REST operations and Watches",
+            "homepage": "https://github.com/travisghansen/kubernetes-client-php/",
+            "keywords": [
+                "api",
+                "client",
+                "k8s",
+                "kubernetes",
+                "php",
+                "rest"
+            ],
+            "time": "2018-09-15T03:57:53+00:00"
+        },
+        {
+            "name": "travisghansen/kubernetes-controller-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/travisghansen/kubernetes-controller-php.git",
+                "reference": "7734cd3319234034308a915e02c820d70a83856b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/7734cd3319234034308a915e02c820d70a83856b",
+                "reference": "7734cd3319234034308a915e02c820d70a83856b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcntl": "*",
+                "ext-yaml": "*",
+                "php": ">=7.2.0",
+                "travisghansen/kubernetes-client-php": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "KubernetesController\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Travis Glenn Hansen"
+                }
+            ],
+            "description": "reusable Kubernetes controller base",
+            "homepage": "https://github.com/travisghansen/kubernetes-controller-php/",
+            "keywords": [
+                "api",
+                "client",
+                "controller",
+                "k8s",
+                "kubernetes",
+                "php"
+            ],
+            "time": "2018-09-12T18:26:16+00:00"
+        },
+        {
+            "name": "vlucas/phpdotenv",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vlucas/phpdotenv.git",
+                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
+                "reference": "8abb4f9aa89ddea9d52112c65bbe8d0125e2fa8e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dotenv\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Vance Lucas",
+                    "email": "vance@vancelucas.com",
+                    "homepage": "http://www.vancelucas.com"
+                }
+            ],
+            "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
+            "keywords": [
+                "dotenv",
+                "env",
+                "environment"
+            ],
+            "time": "2018-07-29T20:33:41+00:00"
+        },
+        {
+            "name": "zendframework/zend-code",
+            "version": "3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-code.git",
+                "reference": "c21db169075c6ec4b342149f446e7b7b724f95eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-code/zipball/c21db169075c6ec4b342149f446e7b7b724f95eb",
+                "reference": "c21db169075c6ec4b342149f446e7b7b724f95eb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "zendframework/zend-eventmanager": "^2.6 || ^3.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "~1.0",
+                "ext-phar": "*",
+                "phpunit/phpunit": "^6.2.3",
+                "zendframework/zend-coding-standard": "^1.0.0",
+                "zendframework/zend-stdlib": "^2.7 || ^3.0"
+            },
+            "suggest": {
+                "doctrine/annotations": "Doctrine\\Common\\Annotations >=1.0 for annotation features",
+                "zendframework/zend-stdlib": "Zend\\Stdlib component"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3.x-dev",
+                    "dev-develop": "3.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Code\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides facilities to generate arbitrary code using an object oriented interface",
+            "homepage": "https://github.com/zendframework/zend-code",
+            "keywords": [
+                "code",
+                "zf2"
+            ],
+            "time": "2018-08-13T20:36:59+00:00"
+        },
+        {
+            "name": "zendframework/zend-escaper",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-escaper.git",
+                "reference": "31d8aafae982f9568287cb4dce987e6aff8fd074"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-escaper/zipball/31d8aafae982f9568287cb4dce987e6aff8fd074",
+                "reference": "31d8aafae982f9568287cb4dce987e6aff8fd074",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6.x-dev",
+                    "dev-develop": "2.7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Escaper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Securely and safely escape HTML, HTML attributes, JavaScript, CSS, and URLs",
+            "keywords": [
+                "ZendFramework",
+                "escaper",
+                "zf"
+            ],
+            "time": "2018-04-25T15:48:53+00:00"
+        },
+        {
+            "name": "zendframework/zend-eventmanager",
+            "version": "3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-eventmanager.git",
+                "reference": "a5e2583a211f73604691586b8406ff7296a946dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/a5e2583a211f73604691586b8406ff7296a946dd",
+                "reference": "a5e2583a211f73604691586b8406ff7296a946dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "athletic/athletic": "^0.1",
+                "container-interop/container-interop": "^1.1.0",
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+                "zendframework/zend-coding-standard": "~1.0.0",
+                "zendframework/zend-stdlib": "^2.7.3 || ^3.0"
+            },
+            "suggest": {
+                "container-interop/container-interop": "^1.1.0, to use the lazy listeners feature",
+                "zendframework/zend-stdlib": "^2.7.3 || ^3.0, to use the FilterChain feature"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev",
+                    "dev-develop": "3.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\EventManager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Trigger and listen to events within a PHP application",
+            "homepage": "https://github.com/zendframework/zend-eventmanager",
+            "keywords": [
+                "event",
+                "eventmanager",
+                "events",
+                "zf2"
+            ],
+            "time": "2018-04-25T15:33:34+00:00"
+        },
+        {
+            "name": "zendframework/zend-http",
+            "version": "2.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-http.git",
+                "reference": "2c8aed3d25522618573194e7cc51351f8cd4a45b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-http/zipball/2c8aed3d25522618573194e7cc51351f8cd4a45b",
+                "reference": "2c8aed3d25522618573194e7cc51351f8cd4a45b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-loader": "^2.5.1",
+                "zendframework/zend-stdlib": "^3.1 || ^2.7.7",
+                "zendframework/zend-uri": "^2.5.2",
+                "zendframework/zend-validator": "^2.10.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.3",
+                "zendframework/zend-coding-standard": "~1.0.0",
+                "zendframework/zend-config": "^3.1 || ^2.6"
+            },
+            "suggest": {
+                "paragonie/certainty": "For automated management of cacert.pem"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev",
+                    "dev-develop": "2.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Http\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Provides an easy interface for performing Hyper-Text Transfer Protocol (HTTP) requests",
+            "keywords": [
+                "ZendFramework",
+                "http",
+                "http client",
+                "zend",
+                "zf"
+            ],
+            "time": "2018-08-13T18:47:03+00:00"
+        },
+        {
+            "name": "zendframework/zend-loader",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-loader.git",
+                "reference": "78f11749ea340f6ca316bca5958eef80b38f9b6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-loader/zipball/78f11749ea340f6ca316bca5958eef80b38f9b6c",
+                "reference": "78f11749ea340f6ca316bca5958eef80b38f9b6c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6.x-dev",
+                    "dev-develop": "2.7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Loader\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Autoloading and plugin loading strategies",
+            "keywords": [
+                "ZendFramework",
+                "loader",
+                "zf"
+            ],
+            "time": "2018-04-30T15:20:54+00:00"
+        },
+        {
+            "name": "zendframework/zend-math",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-math.git",
+                "reference": "0aa5ec1b3132dd7d749d4673d7bdc7ab6b2d202a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-math/zipball/0aa5ec1b3132dd7d749d4673d7bdc7ab6b2d202a",
+                "reference": "0aa5ec1b3132dd7d749d4673d7bdc7ab6b2d202a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "paragonie/random_compat": "^2.0.11",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "suggest": {
+                "ext-bcmath": "If using the bcmath functionality",
+                "ext-gmp": "If using the gmp functionality"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1.x-dev",
+                    "dev-develop": "3.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Math\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Create cryptographically secure pseudo-random numbers, and manage big integers",
+            "keywords": [
+                "ZendFramework",
+                "math",
+                "zf"
+            ],
+            "time": "2018-07-10T19:00:33+00:00"
+        },
+        {
+            "name": "zendframework/zend-server",
+            "version": "2.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-server.git",
+                "reference": "23a2e9a5599c83c05da831cb7c649e8a7809595e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-server/zipball/23a2e9a5599c83c05da831cb7c649e8a7809595e",
+                "reference": "23a2e9a5599c83c05da831cb7c649e8a7809595e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-code": "^2.5 || ^3.0",
+                "zendframework/zend-stdlib": "^2.5 || ^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev",
+                    "dev-develop": "2.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Create Reflection-based RPC servers",
+            "keywords": [
+                "ZendFramework",
+                "server",
+                "zf"
+            ],
+            "time": "2018-04-30T22:21:28+00:00"
+        },
+        {
+            "name": "zendframework/zend-stdlib",
+            "version": "3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-stdlib.git",
+                "reference": "66536006722aff9e62d1b331025089b7ec71c065"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/66536006722aff9e62d1b331025089b7ec71c065",
+                "reference": "66536006722aff9e62d1b331025089b7ec71c065",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpbench/phpbench": "^0.13",
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2.x-dev",
+                    "dev-develop": "3.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Stdlib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
+            "keywords": [
+                "ZendFramework",
+                "stdlib",
+                "zf"
+            ],
+            "time": "2018-08-28T21:34:05+00:00"
+        },
+        {
+            "name": "zendframework/zend-uri",
+            "version": "2.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-uri.git",
+                "reference": "3b6463645c6766f78ce537c70cb4fdabee1e725f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-uri/zipball/3b6463645c6766f78ce537c70cb4fdabee1e725f",
+                "reference": "3b6463645c6766f78ce537c70cb4fdabee1e725f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-escaper": "^2.5",
+                "zendframework/zend-validator": "^2.10"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6.x-dev",
+                    "dev-develop": "2.7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Uri\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A component that aids in manipulating and validating » Uniform Resource Identifiers (URIs)",
+            "keywords": [
+                "ZendFramework",
+                "uri",
+                "zf"
+            ],
+            "time": "2018-04-30T13:40:08+00:00"
+        },
+        {
+            "name": "zendframework/zend-validator",
+            "version": "2.10.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-validator.git",
+                "reference": "38109ed7d8e46cfa71bccbe7e6ca80cdd035f8c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-validator/zipball/38109ed7d8e46cfa71bccbe7e6ca80cdd035f8c9",
+                "reference": "38109ed7d8e46cfa71bccbe7e6ca80cdd035f8c9",
+                "shasum": ""
+            },
+            "require": {
+                "container-interop/container-interop": "^1.1",
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-stdlib": "^2.7.6 || ^3.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+                "zendframework/zend-cache": "^2.6.1",
+                "zendframework/zend-coding-standard": "~1.0.0",
+                "zendframework/zend-config": "^2.6",
+                "zendframework/zend-db": "^2.7",
+                "zendframework/zend-filter": "^2.6",
+                "zendframework/zend-http": "^2.5.4",
+                "zendframework/zend-i18n": "^2.6",
+                "zendframework/zend-math": "^2.6",
+                "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
+                "zendframework/zend-session": "^2.8",
+                "zendframework/zend-uri": "^2.5"
+            },
+            "suggest": {
+                "zendframework/zend-db": "Zend\\Db component, required by the (No)RecordExists validator",
+                "zendframework/zend-filter": "Zend\\Filter component, required by the Digits validator",
+                "zendframework/zend-i18n": "Zend\\I18n component to allow translation of validation error messages",
+                "zendframework/zend-i18n-resources": "Translations of validator messages",
+                "zendframework/zend-math": "Zend\\Math component, required by the Csrf validator",
+                "zendframework/zend-servicemanager": "Zend\\ServiceManager component to allow using the ValidatorPluginManager and validator chains",
+                "zendframework/zend-session": "Zend\\Session component, ^2.8; required by the Csrf validator",
+                "zendframework/zend-uri": "Zend\\Uri component, required by the Uri and Sitemap\\Loc validators"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.10.x-dev",
+                    "dev-develop": "2.11.x-dev"
+                },
+                "zf": {
+                    "component": "Zend\\Validator",
+                    "config-provider": "Zend\\Validator\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Validator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides a set of commonly needed validators",
+            "homepage": "https://github.com/zendframework/zend-validator",
+            "keywords": [
+                "validator",
+                "zf2"
+            ],
+            "time": "2018-02-01T17:05:33+00:00"
+        },
+        {
+            "name": "zendframework/zend-xmlrpc",
+            "version": "2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-xmlrpc.git",
+                "reference": "97e7d70d71b040c8fc94807a911ee9a53dc35ef5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-xmlrpc/zipball/97e7d70d71b040c8fc94807a911ee9a53dc35ef5",
+                "reference": "97e7d70d71b040c8fc94807a911ee9a53dc35ef5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-http": "^2.5.4",
+                "zendframework/zend-math": "^2.7 || ^3.0",
+                "zendframework/zend-server": "^2.7",
+                "zendframework/zend-stdlib": "^2.7 || ^3.0",
+                "zendframework/zendxml": "^1.0.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "suggest": {
+                "zendframework/zend-cache": "To support Zend\\XmlRpc\\Server\\Cache usage"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7.x-dev",
+                    "dev-develop": "2.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\XmlRpc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Fully-featured XML-RPC server and client implementations",
+            "keywords": [
+                "ZendFramework",
+                "xmlrpc",
+                "zf"
+            ],
+            "time": "2018-05-14T19:17:17+00:00"
+        },
+        {
+            "name": "zendframework/zendxml",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/ZendXml.git",
+                "reference": "267db6a2c431a08a8f8ff0f1f4c302a5ba6f5b99"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/ZendXml/zipball/267db6a2c431a08a8f8ff0f1f4c302a5ba6f5b99",
+                "reference": "267db6a2c431a08a8f8ff0f1f4c302a5ba6f5b99",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev",
+                    "dev-develop": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZendXml\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Utility library for XML usage, best practices, and security in PHP",
+            "keywords": [
+                "ZendFramework",
+                "security",
+                "xml",
+                "zf"
+            ],
+            "time": "2018-04-30T15:11:04+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "travisghansen/kubernetes-controller-php": 20,
+        "travisghansen/kubernetes-client-php": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.2.0",
+        "ext-yaml": "*",
+        "ext-pcntl": "*",
+        "ext-json": "*",
+        "ext-bz2": "*"
+    },
+    "platform-dev": []
+}

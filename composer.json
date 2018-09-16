@@ -1,0 +1,58 @@
+{
+    "name": "travisghansen/kubernetes-pfsense-controller",
+    "type": "project",
+    "description": "Integrate Kubernetes and pfSense",
+    "license": "Apache-2.0",
+    "keywords": ["kubernetes", "api", "client", "k8s", "php", "controller", "pfsense", "firewall", "cluster", "metallb", "dns", "ingress", "ingresses", "loadbalancer", "haproxy"],
+    "homepage": "https://github.com/travisghansen/kubernetes-pfsense-controller/",
+    "authors": [
+        {
+            "name" : "Travis Glenn Hansen"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "ext-yaml": "*",
+        "ext-pcntl": "*",
+        "ext-json": "*",
+        "ext-bz2": "*",
+        "travisghansen/kubernetes-controller-php": "@dev",
+        "travisghansen/kubernetes-client-php": "@dev",
+        "zendframework/zend-xmlrpc": "^2.7",
+        "vlucas/phpdotenv": "^2.5"
+    },
+    "autoload": {
+        "psr-0": {"KubernetesPfSenseController\\": "src/"}
+    },
+    "scripts": {
+        "buildphar": [
+            "@removevendor",
+            "@composer install --prefer-dist --no-dev --no-progress --no-suggest --optimize-autoloader --classmap-authoritative --apcu-autoloader --ignore-platform-reqs --ansi --no-interaction",
+            "@downloadpharbuilder",
+            "@php -d phar.readonly=0 phar-builder.phar --name=kubernetes-pfsense-controller-${APP_VERSION:-$(git describe --exact-match --tags 2>/dev/null || git symbolic-ref --short -q HEAD)}.phar package composer.json",
+            "cp releases/kubernetes-pfsense-controller-${APP_VERSION:-$(git describe --exact-match --tags 2>/dev/null || git symbolic-ref --short -q HEAD)}.phar releases/docker.phar",
+            "chmod +x releases/*.phar"
+        ],
+        "removevendor": [
+            "rm -rf vendor"
+        ],
+        "downloadpharbuilder": [
+            "if [ ! -f phar-builder.phar ];then curl -o phar-builder.phar -L `curl -s https://api.github.com/repos/MacFJA/PharBuilder/releases | grep browser_download_url | head -n 1 | cut -d '\"' -f 4`;fi"
+        ],
+        "appversion": [
+            "echo ${APP_VERSION:-$(git describe --exact-match --tags 2>/dev/null || git symbolic-ref --short -q HEAD)}"
+        ]
+    },
+    "extra": {
+        "phar-builder": {
+            "compression": "BZip2",
+            "output-dir": "./releases",
+            "entry-point": "controller.php",
+            "include": [
+                "./.env.example"
+            ],
+            "include-dev": false,
+            "skip-shebang" : false
+        }
+    }
+}

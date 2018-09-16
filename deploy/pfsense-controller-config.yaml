@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kube-system
+  name: pfsense-controller-config
+data:
+  config: |
+    controller-id: "my-cluster"
+    enabled: true
+    plugins:
+      metallb:
+        enabled: true
+        nodeLabelSelector:
+        nodeFieldSelector:
+        bgp-implementation: openbgp
+        options:
+          openbgp:
+            # pass through to config.xml
+            template:
+              md5sigkey:
+              md5sigpass:
+              groupname: metallb
+              row:
+                - parameters: announce all
+                  parmvalue:
+      haproxy-declarative:
+        enabled: true
+      haproxy-ingress-proxy:
+        enabled: true
+        ingressLabelSelector:
+        ingressFieldSelector:
+        defaultFrontend: http-80
+        defaultBackend: traefik
+        # by default anything is allowed
+        #allowedHostRegex: "/.*/"
+      internal-dns-services:
+        enabled: true
+        serviceLabelSelector:
+        serviceFieldSelector:
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+      internal-dns-ingresses:
+        enabled: true
+        ingressLabelSelector:
+        ingressFieldSelector:
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+      internal-dns-haproxy-ingress-proxy:
+        enabled: true
+        #allowedHostRegex: "/.*/"
+        dnsBackends:
+          dnsmasq:
+            enabled: true
+          unbound:
+            enabled: true
+        frontends:
+          http-80:
+            hostname: http-80.k8s
+          primary_frontend_name2:
+            hostname: some-name.k8s
