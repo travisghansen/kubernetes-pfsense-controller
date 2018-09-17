@@ -141,12 +141,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-client-php.git",
-                "reference": "e8a0ba5222cd708a336051da8c1bf2afa64c6f1d"
+                "reference": "dc2711f14811fab17eaa78b5be6e16f1c3c6f673"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/e8a0ba5222cd708a336051da8c1bf2afa64c6f1d",
-                "reference": "e8a0ba5222cd708a336051da8c1bf2afa64c6f1d",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/dc2711f14811fab17eaa78b5be6e16f1c3c6f673",
+                "reference": "dc2711f14811fab17eaa78b5be6e16f1c3c6f673",
                 "shasum": ""
             },
             "require": {
@@ -182,7 +182,7 @@
                 "php",
                 "rest"
             ],
-            "time": "2018-09-17T05:19:48+00:00"
+            "time": "2018-09-17T16:32:30+00:00"
         },
         {
             "name": "travisghansen/kubernetes-controller-php",
@@ -190,12 +190,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-controller-php.git",
-                "reference": "7734cd3319234034308a915e02c820d70a83856b"
+                "reference": "3a8d97fde98a581160b8cea25581d3ec1c4c48f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/7734cd3319234034308a915e02c820d70a83856b",
-                "reference": "7734cd3319234034308a915e02c820d70a83856b",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/3a8d97fde98a581160b8cea25581d3ec1c4c48f6",
+                "reference": "3a8d97fde98a581160b8cea25581d3ec1c4c48f6",
                 "shasum": ""
             },
             "require": {
@@ -229,7 +229,7 @@
                 "kubernetes",
                 "php"
             ],
-            "time": "2018-09-12T18:26:16+00:00"
+            "time": "2018-09-17T16:28:38+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

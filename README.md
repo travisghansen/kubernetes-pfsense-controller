@@ -143,6 +143,9 @@ if you want to specify a regex ending (`$`), you must escape it in yaml as 2 `$`
 `kpc` stores it's stateful data in the cluster as a ConfigMap (kube-system.pfsense-controller-store by default).  You
 review the data there to gain understanding into what the controller is managing.
 
+You may need/want to bump up the `webConfigurator` setting for `Max Processes` to ensure enough simultaneous connections
+can be established.  Each `kpc` instance will only require 1 process (ie: access to the API is serialized by `kpc`).
+
 ## Links
  * https://medium.com/@ipuustin/using-metallb-as-kubernetes-load-balancer-with-ubiquiti-edgerouter-7ff680e9dca3
  * https://miek.nl/2017/december/16/a-k8s-lb-using-arp/
