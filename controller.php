@@ -38,7 +38,7 @@ $kubernetesClient = new KubernetesClient\Client($config);
 $pfSenseClient = new Zend\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
 $pfSenseClient->getHttpClient()->setAuth($pfSenseUsername, getenv('PFSENSE_PASSWORD'));
 if ($pfSenseInsecure) {
-    $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false]);
+    $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
 }
 
 // setup controller
