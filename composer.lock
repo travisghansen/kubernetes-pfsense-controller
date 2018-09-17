@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c8a0f7738ebc5e76c2d6fd5f7474e07",
+    "content-hash": "9cda0515c608b15783bc7472bbf17bb9",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -141,12 +141,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-client-php.git",
-                "reference": "fe374293faa07294386056bd857306d034a30e6a"
+                "reference": "e8a0ba5222cd708a336051da8c1bf2afa64c6f1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/fe374293faa07294386056bd857306d034a30e6a",
-                "reference": "fe374293faa07294386056bd857306d034a30e6a",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/e8a0ba5222cd708a336051da8c1bf2afa64c6f1d",
+                "reference": "e8a0ba5222cd708a336051da8c1bf2afa64c6f1d",
                 "shasum": ""
             },
             "require": {
@@ -182,7 +182,7 @@
                 "php",
                 "rest"
             ],
-            "time": "2018-09-15T03:57:53+00:00"
+            "time": "2018-09-17T05:19:48+00:00"
         },
         {
             "name": "travisghansen/kubernetes-controller-php",

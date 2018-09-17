@@ -114,7 +114,7 @@ on the ingress resources.
 ### pfsense-dns-haproxy-ingress-proxy
 `pfsense-dns-haproxy-ingress-proxy` monitors the HAProxy rules created by the `haproxy-ingress-proxy` plugin and creates
 host aliases for each entry.  To do so you create an arbitrary host in unbound/dnsmasq (something like
-<frontend name>.k8s) and bind that host to the frontend through the config option `frontends.<frontend name>`.  Any
+`<frontend name>.k8s`) and bind that host to the frontend through the config option `frontends.<frontend name>`.  Any
 proxy rules created for that frontend will now automatically get added as aliases to the configured `hostname`.  Make
 sure the static `hostname` created in your DNS service of choice points to the/an IP bound to the corresponding
 `frontend`.
@@ -138,7 +138,7 @@ sure the static `hostname` created in your DNS service of choice points to the/a
 # Notes
 `regex` parameters are passed through php's `preg_match()` method, you can test your syntax using that.  Also note that
 if you want to specify a regex ending (`$`), you must escape it in yaml as 2 `$`
-(ie: `#allowedHostRegex: "/.example.com$$/").
+(ie: `#allowedHostRegex: "/.example.com$$/"`).
 
 `kpc` stores it's stateful data in the cluster as a ConfigMap (kube-system.pfsense-controller-store by default).  You
 review the data there to gain understanding into what the controller is managing.
