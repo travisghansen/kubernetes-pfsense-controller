@@ -15,6 +15,8 @@ deploy:
   skip_cleanup: true
   on:
     repo: travisghansen/kubernetes-pfsense-controller
+    all_branches: true
+    tags: true
 - provider: releases
   api_key:
     secure: gh6irydkkZ5Q+BTfYJ9+554IfNalaCsSEAEUkcFRf8mCQltttApo7lQtoOIQFZrQhxkfJukhZBogdDJ1cYb/KJD0j5+XZx7dSHXYHqYy03KYZbWdHvhaBENDM5sxZG1QSfva9pP6x8XQDn3/5p8amUuWwCtlAWrKfh+tfdkyaeBWppzP1xxoeee4DekBaGNWSmN/+Ebvw+4XkrJDi2KnufkiWiUg4JdBIPJNWJXzXUVC2TIa7915iGFQ0wNcJHd50kXncCjFGUufBDauxa1U72jdAByy6e+yHlWXB1h0jw15UD89i+YMCHx+oJo94+DiJh/J+5RR4sEx6+Nqo8tH4CBW2C83RdMMRAy6/sUXtlFEpPRoyUXfLxIvxuNco5DdKb2Z2P+fuJFsNWVKWN/htKXtLxWD1SxjpldfmfieKhGB4xB+hJAvNRq7K4kd5IRCX9O9IWvcuy2+uybovraDqPk6oWpPCiC6wThXt5ELw48ga9WwRbtuMt+bX0jFqzQMeS8Xgcwu0WZ+VDLqixr+NPGrt+lVTvEYUADRRpT1B25N/Ssmtxut+Tk2D2U9qJ6leYzBp8KcavliG72qt/6fdi6bQ9l4rlupq2CwNaqEJW+1WyAHi759138RacVRJwIX6oi1YvYqSR7jCFhc4H7IxxPjvUPDaQmzXAfsZmgESXY=
