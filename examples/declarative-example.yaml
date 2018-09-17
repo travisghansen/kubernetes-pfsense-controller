@@ -1,0 +1,111 @@
+---
+# In order to effectively use this file you must familiarize youself with the
+# the stucture of the config.xml structure of the HAProxy in pfSense.  Most of
+# the values are just directly passed through.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: ldap
+  name: declarative-example
+  labels:
+    pfsense.org/type: declarative
+data:
+  data: |
+    resources:
+      - type: backend
+        ha_servers:
+          # declare dynamic nodes by using the backing service
+          - type: node-service
+            # serviceNamespace: optional, uses namespace of the ConfigMap by default
+            # service must be type NodePort or LoadBalancer
+            serviceName: traefik-ingress-service
+            servicePort: 80
+            # pass through directly to mimic config.xml structure
+            definition:
+              status: active
+              forwardto:
+              ssl:
+              weight:
+              sslserververify:
+              verifyhost:
+              ssl-server-ca:
+              ssl-server-crl:
+              ssl-server-clientcert:
+              cookie:
+              maxconn:
+              advanced:
+          # declare static nodes
+          - type: node-static
+            # pass through directly to mimic config.xml structure
+            definition:
+              status: active
+              name: node04
+              address: 172.29.2.14
+              port: 80
+              forwardto:
+              ssl:
+              weight:
+              sslserververify:
+              verifyhost:
+              ssl-server-ca:
+              ssl-server-crl:
+              ssl-server-clientcert:
+              cookie:
+              maxconn:
+              advanced:
+        # pass through directly to mimic config.xml structure
+        definition:
+          a_acl:
+          a_actionitems:
+          advanced:
+          advanced_backend:
+          name: traefik
+          balance: leastconn
+          balance_urilen:
+          balance_uridepth:
+          balance_uriwhole:
+          transparent_clientip:
+          transparent_interface:
+          check_type: Basic
+          checkinter:
+          log-health-checks:
+          httpcheck_method:
+          monitor_uri:
+          monitor_httpversion:
+          monitor_username:
+          monitor_domain:
+          monitor_agentport:
+          agent_check:
+          agent_port:
+          agent_inter:
+          connection_timeout:
+          server_timeout: 10800000
+          retries:
+          stats_enabled:
+          stats_username:
+          stats_password:
+          stats_uri:
+          stats_scope:
+          stats_realm:
+          stats_admin:
+          stats_node:
+          stats_desc:
+          stats_refresh:
+          persist_stick_expire:
+          persist_stick_tablesize:
+          persist_stick_length:
+          persist_stick_cookiename:
+          persist_sticky_type: none
+          persist_cookie_enabled:
+          persist_cookie_name:
+          persist_cookie_mode: passive
+          persist_cookie_cachable:
+          strict_transport_security:
+          cookie_attribute_secure:
+          email_level:
+          email_to:
+          errorfiles:
+      #- type: frontend
+        # pass through directly to mimic config.xml structure
+        #definition:
+        # ...

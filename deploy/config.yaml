@@ -33,7 +33,7 @@ data:
         defaultBackend: traefik
         # by default anything is allowed
         #allowedHostRegex: "/.*/"
-      internal-dns-services:
+      pfsense-dns-services:
         enabled: true
         serviceLabelSelector:
         serviceFieldSelector:
@@ -43,7 +43,7 @@ data:
             enabled: true
           unbound:
             enabled: true
-      internal-dns-ingresses:
+      pfsense-dns-ingresses:
         enabled: true
         ingressLabelSelector:
         ingressFieldSelector:
@@ -53,7 +53,7 @@ data:
             enabled: true
           unbound:
             enabled: true
-      internal-dns-haproxy-ingress-proxy:
+      pfsense-dns-haproxy-ingress-proxy:
         enabled: true
         #allowedHostRegex: "/.*/"
         dnsBackends:

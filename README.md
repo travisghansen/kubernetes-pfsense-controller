@@ -9,7 +9,7 @@ the Kubernetes API is `watch`ed and then updates to the pfSense `config.xml` are
 appropriate reload/restart/update/sync methods to apply changes.
 
 Disclaimer: this is new software bound to have bugs.  Please make a backup before using it as it may eat your
-configuration.  Having said that, all known code paths appear to be solid and work without issue.  If you find a bug,
+configuration.  Having said that, all known code paths appear to be solid and working without issue.  If you find a bug,
 please report it! 
 
 # Plugins
@@ -18,9 +18,9 @@ about each plugin follows below.
 
 ## metallb
 [MetalLB](https://metallb.universe.tf/) implements `LoadBalancer` type `Service`s in Kubernetes.  This is done via any
-combination of Layer2 or BGP type configurations.  Layer2 only requires no integration with pfSense, however, if you
-want to leverage the BGP implementation you need a BGP server along with neighbor configuration.  `kpc` *dynamically*
-updates neighbors for you in pfSense by continually monitoring cluster `Node`s.
+combination of Layer2 or BGP type configurations.  Layer2 requires no integration with pfSense, however, if you want to
+leverage the BGP implementation you need a BGP server along with neighbor configuration.  `kpc` *dynamically* updates
+bgp neighbors for you in pfSense by continually monitoring cluster `Node`s.
 
 The plugin assumes you've already installed openbgp and configured it as well as created a `group` to use with MetalLB.
 
@@ -44,7 +44,8 @@ The plugin assumes you've already installed openbgp and configured it as well as
 ## haproxy-declarative
 `haproxy-declarative` plugin allows you to *mostly* statically create HAProxy frontend/backend definitions as
 `ConfigMap` resources in the cluster.  When declaring backends however, the pool of servers can (will) be dynamically
-created/update based on cluster nodes.  See deploy/example-foo.yaml for an example.
+created/update based on cluster nodes.  See [declarative-example.yaml](examples/declarative-example.yaml) for an
+example.
  
 ```yaml
       haproxy-declarative:
@@ -94,9 +95,8 @@ or not).
 ```
 
 ### pfsense-dns-ingresses
-`pfsense-dns-ingresses` watches ingress and automatically creates DNS entries in unbound/dnsmasq.
-`kpc` will create the DNS entry in unbound/dnsmasq.  This requires proper support from the ingress controller to set IPs
-on the ingress resources.
+`pfsense-dns-ingresses` watches ingresses and automatically creates DNS entries in unbound/dnsmasq. This requires proper
+support from the ingress controller to set IPs on the ingress resources.
 
 ```yaml
       pfsense-dns-ingresses:

@@ -28,6 +28,7 @@ deploy:
   file_glob: true
   file: releases/kubernetes-pfsense-controller-*.phar
   skip_cleanup: true
+  overwrite: true
   on:
     repo: travisghansen/kubernetes-pfsense-controller
     tags: true
