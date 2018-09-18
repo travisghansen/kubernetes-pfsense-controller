@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: kube-system
-  name: pfsense-controller-config
+  name: kubernetes-pfsense-controller-config
 data:
   config: |
     controller-id: "my-cluster"

@@ -42,10 +42,9 @@ The plugin assumes you've already installed openbgp and configured it as well as
 ```
 
 ## haproxy-declarative
-`haproxy-declarative` plugin allows you to *mostly* statically create HAProxy frontend/backend definitions as
-`ConfigMap` resources in the cluster.  When declaring backends however, the pool of servers can (will) be dynamically
-created/update based on cluster nodes.  See [declarative-example.yaml](examples/declarative-example.yaml) for an
-example.
+`haproxy-declarative` plugin allows you to declaratively create HAProxy frontend/backend definitions as `ConfigMap`
+resources in the cluster.  When declaring backends however, the pool of servers can/will be dynamically created/updated
+based on cluster nodes.  See [declarative-example.yaml](examples/declarative-example.yaml) for an example.
  
 ```yaml
       haproxy-declarative:
@@ -140,8 +139,8 @@ sure the static `hostname` created in your DNS service of choice points to the/a
 if you want to specify a regex ending (`$`), you must escape it in yaml as 2 `$`
 (ie: `#allowedHostRegex: "/.example.com$$/"`).
 
-`kpc` stores it's stateful data in the cluster as a ConfigMap (kube-system.pfsense-controller-store by default).  You
-review the data there to gain understanding into what the controller is managing.
+`kpc` stores it's stateful data in the cluster as a ConfigMap (kube-system.kubernetes-pfsense-controller-store by
+default).  You can review the data there to gain understanding into what the controller is managing.
 
 You may need/want to bump up the `webConfigurator` setting for `Max Processes` to ensure enough simultaneous connections
 can be established.  Each `kpc` instance will only require 1 process (ie: access to the API is serialized by `kpc`).

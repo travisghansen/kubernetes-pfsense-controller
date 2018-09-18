@@ -42,7 +42,7 @@ if ($pfSenseInsecure) {
 }
 
 // setup controller
-$controllerName = 'pfsense-controller';
+$controllerName = 'kubernetes-pfsense-controller';
 $options = [
     //'configMapNamespace' => 'kube-system',
     //'configMapName' => $controllerName.'-controller-config',

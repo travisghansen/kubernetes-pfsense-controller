@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: ldap
+  namespace: kube-system
   name: declarative-example
   labels:
     pfsense.org/type: declarative
