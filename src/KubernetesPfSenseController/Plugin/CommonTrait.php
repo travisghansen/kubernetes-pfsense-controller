@@ -2,6 +2,8 @@
 
 namespace KubernetesPfSenseController\Plugin;
 
+use KubernetesClient\Client;
+
 /**
  * Used by the plugins to provide standard set of features
  *
@@ -16,45 +18,61 @@ trait CommonTrait
      * @param $stateKey
      * @return \Closure
      */
-    private function getNodeWatchCallback($stateKey)
+    private function getNodeWatchCallback($stateKey, $options = [])
     {
-        return function ($event, $watch) use ($stateKey) {
+        return function ($event, $watch) use ($stateKey, $options) {
+            if ($options['log']) {
+                $this->logEvent($event);
+            }
+
+            if ($options['trigger'] !== false) {
+                $trigger = true;
+            } else {
+                $trigger = false;
+            }
+
             $key = $stateKey;
-            $items = $this->state[$key];
+            $items = &$this->state[$key];
 
             $item = $event['object'];
             unset($item['kind']);
             unset($item['apiVersion']);
 
             switch ($event['type']) {
+                // NOTE: sometimes ADDED events are triggered erroneously
                 case 'ADDED':
-                    $items[] = $item;
-                    $this->state[$key] = $items;
-                    $this->delayedAction();
+                case 'MODIFIED':
+                    $result = KubernetesUtils::findListItem($items, $item['metadata']['name']);
+                    $itemKey = $result['key'];
+                    $oldNode = $result['item'];
+
+                    KubernetesUtils::putListItem($items, $item);
+
+                    if ($itemKey === null) {
+                        if ($trigger) {
+                            $this->delayedAction();
+                        }
+                    } else {
+                        $nodeIp = KubernetesUtils::getNodeIp($item);
+                        $oldNodeIp = KubernetesUtils::getNodeIp($oldNode);
+
+                        if ($oldNodeIp != $nodeIp) {
+                            $this->log("NodeIP Address Changed - NewIp: ${nodeIp}, OldIP: ${oldNodeIp}");
+                            if ($trigger) {
+                                $this->delayedAction();
+                            }
+                        }
+                    }
                     break;
                 case 'DELETED':
                     $result = KubernetesUtils::findListItem($items, $item['metadata']['name']);
                     $itemKey = $result['key'];
-                    unset($items[$itemKey]);
-
-                    $items = array_values($items);
-                    $this->state[$key] = $items;
-                    $this->delayedAction();
-                    break;
-                case 'MODIFIED':
-                    $nodeIp = KubernetesUtils::getNodeIp($item);
-
-                    $result = KubernetesUtils::findListItem($items, $item['metadata']['name']);
-                    $itemKey = $result['key'];
-                    $oldNode = $result['item'];
-                    $oldNodeIp = KubernetesUtils::getNodeIp($oldNode);
-
-                    $items[$itemKey] = $item;
-                    $this->state[$key] = $items;
-
-                    if ($oldNodeIp != $nodeIp) {
-                        $this->log("NodeIP Address Changed - NewIp: ${nodeIp}, OldIP: ${oldNodeIp}");
-                        $this->delayedAction();
+                    if ($itemKey !== null) {
+                        unset($items[$itemKey]);
+                        $items = array_values($items);
+                        if ($trigger) {
+                            $this->delayedAction();
+                        }
                     }
                     break;
             }
@@ -82,7 +100,7 @@ trait CommonTrait
             }
 
             $key = $stateKey;
-            $items = $this->state[$key];
+            $items = &$this->state[$key];
 
             $item = $event['object'];
             unset($item['kind']);
@@ -90,8 +108,8 @@ trait CommonTrait
 
             switch ($event['type']) {
                 case 'ADDED':
-                    $items[] = $item;
-                    $this->state[$key] = $items;
+                case 'MODIFIED':
+                    KubernetesUtils::putListItem($items, $item);
                     if ($trigger) {
                         $this->delayedAction();
                     }
@@ -99,21 +117,12 @@ trait CommonTrait
                 case 'DELETED':
                     $result = KubernetesUtils::findListItem($items, $item['metadata']['name'], $item['metadata']['namespace']);
                     $itemKey = $result['key'];
-                    unset($items[$itemKey]);
-
-                    $items = array_values($items);
-                    $this->state[$key] = $items;
-                    if ($trigger) {
-                        $this->delayedAction();
-                    }
-                    break;
-                case 'MODIFIED':
-                    $result = KubernetesUtils::findListItem($items, $item['metadata']['name'], $item['metadata']['namespace']);
-                    $itemKey = $result['key'];
-                    $items[$itemKey] = $item;
-                    $this->state[$key] = $items;
-                    if ($trigger) {
-                        $this->delayedAction();
+                    if ($itemKey !== null) {
+                        unset($items[$itemKey]);
+                        $items = array_values($items);
+                        if ($trigger) {
+                            $this->delayedAction();
+                        }
                     }
                     break;
             }

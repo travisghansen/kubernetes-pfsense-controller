@@ -113,9 +113,11 @@ class KubernetesUtils
      */
     public static function getNodeIp($node)
     {
-        foreach ($node['status']['addresses'] as $address) {
-            if ($address['type'] == 'InternalIP') {
-                return $address['address'];
+        if (is_array($node['status']['addresses'])) {
+            foreach ($node['status']['addresses'] as $address) {
+                if ($address['type'] == 'InternalIP') {
+                    return $address['address'];
+                }
             }
         }
     }
@@ -125,6 +127,7 @@ class KubernetesUtils
      *
      * @param $list
      * @param $name
+     * @param $namespace
      * @return array
      */
     public static function findListItem($list, $name, $namespace = null)
@@ -151,6 +154,23 @@ class KubernetesUtils
             'key' => $itemKey,
             'item' => $item
         ];
+    }
+
+    /**
+     * Put item in the list (replacing in update scenario or adding if appropriate)
+     *
+     * @param $list
+     * @param $item
+     */
+    public static function putListItem(&$list, $item) {
+        $result = self::findListItem($list, $item['metadata']['name'], $item['metadata']['namespace']);
+        $itemKey = $result['key'];
+
+        if ($itemKey === null) {
+            $list[] = $item;
+        } else {
+            $list[$itemKey] = $item;
+        }
     }
 
     /**
