@@ -69,6 +69,16 @@ class DNSIngresses extends PfSenseAbstract
     }
 
     /**
+     * How long to wait for watches to settle
+     *
+     * @return int
+     */
+    public function getSettleTime()
+    {
+        return 10;
+    }
+
+    /**
      * Build a set of hosts that should have IP Address
      *
      * @param $resourceHosts

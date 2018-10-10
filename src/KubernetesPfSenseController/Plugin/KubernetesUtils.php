@@ -162,7 +162,8 @@ class KubernetesUtils
      * @param $list
      * @param $item
      */
-    public static function putListItem(&$list, $item) {
+    public static function putListItem(&$list, $item)
+    {
         $result = self::findListItem($list, $item['metadata']['name'], $item['metadata']['namespace']);
         $itemKey = $result['key'];
 

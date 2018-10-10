@@ -94,6 +94,16 @@ class HAProxyIngressProxy extends PfSenseAbstract
     }
 
     /**
+     * How long to wait for watches to settle
+     *
+     * @return int
+     */
+    public function getSettleTime()
+    {
+        return 10;
+    }
+
+    /**
      * Update pfSense state
      *
      * @return bool
