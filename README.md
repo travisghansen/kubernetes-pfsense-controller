@@ -4,9 +4,9 @@
 to facilitate a first-class Kubernetes cluster by integrating and/or implementing features that generally do not come
 with bare-metal installation(s).
 
-This is generally achieved using the standard Kubernetes API along with the xmlrpc API for pfSense.  Speaking generally
-the Kubernetes API is `watch`ed and then updates to the pfSense `config.xml` are sent via xmlrpc calls along with
-appropriate reload/restart/update/sync methods to apply changes.
+This is generally achieved using the standard Kubernetes API along with the xmlrpc API for pfSense.  Speaking broadly
+the Kubernetes API is `watch`ed and appropriate updates are sent to pfSense (`config.xml`) via xmlrpc calls along with
+appropriate reload/restart/update/sync actions to apply changes.
 
 Disclaimer: this is new software bound to have bugs.  Please make a backup before using it as it may eat your
 configuration.  Having said that, all known code paths appear to be solid and working without issue.  If you find a bug,
@@ -56,8 +56,16 @@ based on cluster nodes.  See [declarative-example.yaml](examples/declarative-exa
 running on pfSense.  If you run pfSense on the network edge with non-cluster services already running, you now can
 dynamically inject new rules to route traffic into your cluster while simultaneously running non-cluster services.
 
+To achieve this goal, new 'shared' HAProxy frontends are created and attached to an **existing** HAProxy frontend.  Each
+created frontend should also set an existing backend.  Note that existing frontend(s)/backend(s) can be created manually
+or using the `haproxy-declarative` plugin.
+
 Combined with `haproxy-declarative` you can create a dynamic backend service (ie: your ingress controller) and
-subsequently dynamic frontend services based off of cluster ingresses.
+subsequently dynamic frontend services based off of cluster ingresses.  This is generally helpful when you cannot or do
+not for whatever reason create wildcard frontend(s) to handle incoming traffic in HAProxy on pfSense.
+
+Optionally, on the ingress resources you can set the following annotations: `haproxy-ingress-proxy.pfsense.org/frontend`
+and `haproxy-ingress-proxy.pfsense.org/backend` to respectively set the frontend and backend to override the defaults.
 
 ```yaml
       haproxy-ingress-proxy:
