@@ -16,8 +16,8 @@
         "ext-pcntl": "*",
         "ext-json": "*",
         "ext-bz2": "*",
-        "travisghansen/kubernetes-controller-php": "@dev",
-        "travisghansen/kubernetes-client-php": "@dev",
+        "travisghansen/kubernetes-controller-php": "0.1.*",
+        "travisghansen/kubernetes-client-php": "0.1.*",
         "zendframework/zend-xmlrpc": "^2.7",
         "vlucas/phpdotenv": "^2.5"
     },
