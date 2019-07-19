@@ -240,16 +240,16 @@
         },
         {
             "name": "travisghansen/kubernetes-controller-php",
-            "version": "v0.1.0",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-controller-php.git",
-                "reference": "0a77458a292bacf10d7ee36248de9c05d1bb913f"
+                "reference": "ac4845f94b3add2530e28447ed20201d5593ccd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/0a77458a292bacf10d7ee36248de9c05d1bb913f",
-                "reference": "0a77458a292bacf10d7ee36248de9c05d1bb913f",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/ac4845f94b3add2530e28447ed20201d5593ccd6",
+                "reference": "ac4845f94b3add2530e28447ed20201d5593ccd6",
                 "shasum": ""
             },
             "require": {
@@ -283,7 +283,7 @@
                 "kubernetes",
                 "php"
             ],
-            "time": "2019-05-22T00:12:29+00:00"
+            "time": "2019-07-19T16:30:45+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
