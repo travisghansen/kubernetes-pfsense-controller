@@ -35,7 +35,7 @@ if (getenv('KUBERNETES_SERVICE_HOST')) {
 $kubernetesClient = new KubernetesClient\Client($config);
 
 // pfSense client
-$pfSenseClient = new Zend\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
+$pfSenseClient = new \KubernetesPfSenseController\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
 $pfSenseClient->getHttpClient()->setAuth($pfSenseUsername, getenv('PFSENSE_PASSWORD'));
 if ($pfSenseInsecure) {
     $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
