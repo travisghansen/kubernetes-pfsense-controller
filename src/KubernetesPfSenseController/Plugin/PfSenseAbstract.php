@@ -11,6 +11,23 @@ namespace KubernetesPfSenseController\Plugin;
 abstract class PfSenseAbstract extends \KubernetesController\Plugin\AbstractPlugin
 {
     /**
+     * Save a pfSense configuration block
+     *
+     * @param PfSenseConfigBlock $config
+     * @throws \Exception
+     */
+    public function savePfSenseConfigBlock(PfSenseConfigBlock $config)
+    {
+        try {
+            $config->save();
+        } catch (\Exception $e) {
+            $sectionName = $config->getSectionName();
+            $this->log("failed saving ${sectionName} config: ".$e->getMessage().' ('.$e->getCode().')');
+            throw $e;
+        }
+    }
+
+    /**
      * Execute a PHP snippet on pfSense server
      *
      * @param $code

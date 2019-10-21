@@ -225,12 +225,12 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
         try {
             if ($dnsmasqEnabled && !empty($dnsmasqConfig)) {
-                $dnsmasqConfig->save();
+                $this->savePfSenseConfigBlock($dnsmasqConfig);
                 $this->reloadDnsmasq();
             }
 
             if ($unboundEnabled && !empty($unboundConfig)) {
-                $unboundConfig->save();
+                $this->savePfSenseConfigBlock($unboundConfig);
                 $this->reloadUnbound();
             }
 
@@ -242,6 +242,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
             return true;
         } catch (\Exception $e) {
+            $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
             return false;
         }
     }

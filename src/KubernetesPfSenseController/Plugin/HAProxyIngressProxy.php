@@ -249,7 +249,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
         }
 
         try {
-            $haProxyConfig->save();
+            $this->savePfSenseConfigBlock($haProxyConfig);
             $this->reloadHAProxy();
 
             // persist the new set of managed frontends
@@ -258,6 +258,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
 
             return true;
         } catch (\Exception $e) {
+            $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
             return false;
         }
     }
