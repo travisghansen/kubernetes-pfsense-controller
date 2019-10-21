@@ -1,7 +1,7 @@
 # if: tag IS present
 language: php
 php:
-- '7.2'
+- '7.3'
 sudo: required
 services:
 - docker

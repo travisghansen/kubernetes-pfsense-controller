@@ -29,7 +29,7 @@ class MetalLB extends PfSenseAbstract
         $nodeLabelSelector = $pluginConfig['nodeLabelSelector'];
         $nodeFieldSelector = $pluginConfig['nodeFieldSelector'];
 
-        //metallb config
+        // metallb config
         $watch = $controller->getKubernetesClient()->createWatch('/api/v1/watch/namespaces/metallb-system/configmaps/config', [], $this->getMetalLbConfigWatchCallback());
         $this->addWatch($watch);
 
