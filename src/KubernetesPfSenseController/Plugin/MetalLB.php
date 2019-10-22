@@ -29,7 +29,7 @@ class MetalLB extends PfSenseAbstract
         $nodeLabelSelector = $pluginConfig['nodeLabelSelector'];
         $nodeFieldSelector = $pluginConfig['nodeFieldSelector'];
 
-        //metallb config
+        // metallb config
         $watch = $controller->getKubernetesClient()->createWatch('/api/v1/watch/namespaces/metallb-system/configmaps/config', [], $this->getMetalLbConfigWatchCallback());
         $this->addWatch($watch);
 
@@ -196,13 +196,14 @@ class MetalLB extends PfSenseAbstract
 
             // save newly managed configuration
             try {
-                $openbgpConfig->save();
+                $this->savePfSenseConfigBlock($openbgpConfig);
                 $this->reloadOpenbgp();
                 $store['openbgp']['managed_neighbors'] = $managedNeighborsPreSave;
                 $this->saveStore($store);
 
                 return true;
             } catch (\Exception $e) {
+                $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
                 return false;
             }
         } else {
@@ -220,13 +221,14 @@ class MetalLB extends PfSenseAbstract
 
             // save newly managed configuration
             try {
-                $openbgpConfig->save();
+                $this->savePfSenseConfigBlock($openbgpConfig);
                 $this->reloadOpenbgp();
                 $store['openbgp']['managed_neighbors'] = [];
                 $this->saveStore($store);
 
                 return true;
             } catch (\Exception $e) {
+                $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
                 return false;
             }
         }

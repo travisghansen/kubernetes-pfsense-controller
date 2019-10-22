@@ -35,7 +35,7 @@ if (getenv('KUBERNETES_SERVICE_HOST')) {
 $kubernetesClient = new KubernetesClient\Client($config);
 
 // pfSense client
-$pfSenseClient = new Zend\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
+$pfSenseClient = new \KubernetesPfSenseController\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
 $pfSenseClient->getHttpClient()->setAuth($pfSenseUsername, getenv('PFSENSE_PASSWORD'));
 if ($pfSenseInsecure) {
     $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
@@ -51,10 +51,15 @@ $options = [
     //'storeName' => $controllerName.'-controller-store',
 ];
 
-$controller = new KubernetesController\Controller($controllerName, $kubernetesClient, $options);
+$controller = new KubernetesPfSenseController\Controller($controllerName, $kubernetesClient, $options);
+$kubernetesClient = $controller->getKubernetesClient();
 
-// registry
+// register pfSenseClient
 $controller->setRegistryItem('pfSenseClient', $pfSenseClient);
+
+// register kubernetes version info
+$kubernetesVersionInfo = $kubernetesClient->request("/version");
+$controller->setRegistryItem('kubernetesVersionInfo', $kubernetesVersionInfo);
 
 // plugins
 $controller->registerPlugin('\KubernetesPfSenseController\Plugin\MetalLB');

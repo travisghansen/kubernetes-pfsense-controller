@@ -28,6 +28,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getFrontends()
     {
+        if (!is_array($this->data['ha_backends'])) {
+            return [];
+        }
+        if (!is_array($this->data['ha_backends']['item'])) {
+            return [];
+        }
+
         return $this->data['ha_backends']['item'];
     }
 
@@ -53,6 +60,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getBackends()
     {
+        if (!is_array($this->data['ha_pools'])) {
+            return [];
+        }
+        if (!is_array($this->data['ha_pools']['item'])) {
+            return [];
+        }
+
         return $this->data['ha_pools']['item'];
     }
 
@@ -79,6 +93,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function frontendExists($name)
     {
+        if (!is_array($this->data['ha_backends'])) {
+            return false;
+        }
+        if (!is_array($this->data['ha_backends']['item'])) {
+            return false;
+        }
+
         foreach ($this->data['ha_backends']['item'] as $item) {
             if ($item['name'] == $name) {
                 return true;
@@ -96,6 +117,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function backendExists($name)
     {
+        if (!is_array($this->data['ha_pools'])) {
+            return false;
+        }
+        if (!is_array($this->data['ha_pools']['item'])) {
+            return false;
+        }
+
         foreach ($this->data['ha_pools']['item'] as $item) {
             if ($item['name'] == $name) {
                 return true;
@@ -113,6 +141,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getFrontend($name)
     {
+        if (!is_array($this->data['ha_backends'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_backends']['item'])) {
+            return;
+        }
+
         foreach ($this->data['ha_backends']['item'] as $item) {
             if ($item['name'] == $name) {
                 return $item;
@@ -128,6 +163,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getFrontendKey($name)
     {
+        if (!is_array($this->data['ha_backends'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_backends']['item'])) {
+            return;
+        }
+
         foreach ($this->data['ha_backends']['item'] as $key => $item) {
             if ($item['name'] == $name) {
                 return $key;
@@ -143,6 +185,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getBackend($name)
     {
+        if (!is_array($this->data['ha_pools'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_pools']['item'])) {
+            return;
+        }
+
         foreach ($this->data['ha_pools']['item'] as $item) {
             if ($item['name'] == $name) {
                 return $item;
@@ -158,6 +207,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function getBackendKey($name)
     {
+        if (!is_array($this->data['ha_pools'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_pools']['item'])) {
+            return;
+        }
+
         foreach ($this->data['ha_pools']['item'] as $key => $item) {
             if ($item['name'] == $name) {
                 return $key;
@@ -172,6 +228,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function removeFrontend($name)
     {
+        if (!is_array($this->data['ha_backends'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_backends']['item'])) {
+            return;
+        }
+
         $object = $this;
         array_walk($this->data['ha_backends']['item'], function ($item, $key) use ($name, $object) {
             if ($item['name'] == $name) {
@@ -190,6 +253,13 @@ class HAProxyConfig extends PfSenseConfigBlock
      */
     public function removeBackend($name)
     {
+        if (!is_array($this->data['ha_pools'])) {
+            return;
+        }
+        if (!is_array($this->data['ha_pools']['item'])) {
+            return;
+        }
+
         $object = $this;
         array_walk($this->data['ha_pools']['item'], function ($item, $key) use ($name, $object) {
             if ($item['name'] == $name) {
@@ -212,6 +282,13 @@ class HAProxyConfig extends PfSenseConfigBlock
             $key = $this->getFrontendKey($item['name']);
             $this->data['ha_backends']['item'][$key] = $item;
         } else {
+            if (!is_array($this->data['ha_backends'])) {
+                $this->data['ha_backends'] = [];
+            }
+            if (!is_array($this->data['ha_backends']['item'])) {
+                $this->data['ha_backends']['item'] = [];
+            }
+
             $this->data['ha_backends']['item'][] = $item;
         }
     }
@@ -227,6 +304,13 @@ class HAProxyConfig extends PfSenseConfigBlock
             $key = $this->getBackendKey($item['name']);
             $this->data['ha_pools']['item'][$key] = $item;
         } else {
+            if (!is_array($this->data['ha_pools'])) {
+                $this->data['ha_pools'] = [];
+            }
+            if (!is_array($this->data['ha_pools']['item'])) {
+                $this->data['ha_pools']['item'] = [];
+            }
+
             $this->data['ha_pools']['item'][] = $item;
         }
     }

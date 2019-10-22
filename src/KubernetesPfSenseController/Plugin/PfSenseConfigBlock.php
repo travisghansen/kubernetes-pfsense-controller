@@ -108,6 +108,26 @@ class PfSenseConfigBlock
     }
 
     /**
+     * Get the sectionType
+     *
+     * @return int
+     */
+    public function getSectionType()
+    {
+        return $this->sectionType;
+    }
+
+    /**
+     * Get the sectionName
+     *
+     * @return string
+     */
+    public function getSectionName()
+    {
+        return $this->sectionName;
+    }
+
+    /**
      * Save the config block to pfSense
      *
      * @throws \Exception

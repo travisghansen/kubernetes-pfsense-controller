@@ -105,7 +105,17 @@ data:
           email_level:
           email_to:
           errorfiles:
-      #- type: frontend
+      - type: frontend
         # pass through directly to mimic config.xml structure
-        #definition:
-        # ...
+        # many more options available, review your config.xml for more detail
+        definition:
+          name: some-frontend-name
+          type: http
+          forwardfor: yes
+          status: active
+          backend_serverpool: some-backend-name
+          a_extaddr:
+            item:
+              - extaddr: wan_ipv4
+                extaddr_port: 443
+                extaddr_ssl: yes

@@ -145,7 +145,7 @@ class HAProxyDeclarative extends PfSenseAbstract
         }
 
         try {
-            $haProxyConfig->save();
+            $this->savePfSenseConfigBlock($haProxyConfig);
             $this->reloadHAProxy();
 
             // persist the new set of managed resources
@@ -155,6 +155,7 @@ class HAProxyDeclarative extends PfSenseAbstract
 
             return true;
         } catch (\Exception $e) {
+            $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
             return false;
         }
     }
@@ -172,6 +173,7 @@ class HAProxyDeclarative extends PfSenseAbstract
         $controller = $this->getController();
         switch ($resource['type']) {
             case 'node-static':
+            case 'frontend':
                 return $resource['definition'];
                 break;
             case 'node-service':
@@ -239,9 +241,6 @@ class HAProxyDeclarative extends PfSenseAbstract
                 }
 
                 return $expanded_backend;
-                break;
-            case 'frontend':
-                return $resource['definition'];
                 break;
         }
     }

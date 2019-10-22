@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.3.0",
         "ext-yaml": "*",
         "ext-pcntl": "*",
         "ext-json": "*",
@@ -19,7 +19,8 @@
         "travisghansen/kubernetes-controller-php": "0.1.*",
         "travisghansen/kubernetes-client-php": "0.1.*",
         "zendframework/zend-xmlrpc": "^2.7",
-        "vlucas/phpdotenv": "^2.5"
+        "vlucas/phpdotenv": "^2.5",
+        "composer/semver": "^1.5"
     },
     "autoload": {
         "psr-0": {"KubernetesPfSenseController\\": "src/"}
