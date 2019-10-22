@@ -51,10 +51,15 @@ $options = [
     //'storeName' => $controllerName.'-controller-store',
 ];
 
-$controller = new KubernetesController\Controller($controllerName, $kubernetesClient, $options);
+$controller = new KubernetesPfSenseController\Controller($controllerName, $kubernetesClient, $options);
+$kubernetesClient = $controller->getKubernetesClient();
 
-// registry
+// register pfSenseClient
 $controller->setRegistryItem('pfSenseClient', $pfSenseClient);
+
+// register kubernetes version info
+$kubernetesVersionInfo = $kubernetesClient->request("/version");
+$controller->setRegistryItem('kubernetesVersionInfo', $kubernetesVersionInfo);
 
 // plugins
 $controller->registerPlugin('\KubernetesPfSenseController\Plugin\MetalLB');

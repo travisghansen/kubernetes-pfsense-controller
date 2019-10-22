@@ -28,12 +28,23 @@ class DNSIngresses extends PfSenseAbstract
         $ingressLabelSelector = $pluginConfig['serviceLabelSelector'];
         $ingressFieldSelector = $pluginConfig['serviceFieldSelector'];
 
+        // 1.20 will kill the old version
+        // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
+        $kubernetesMajorMinor = $controller->getKubernetesVersionMajorMinor();
+        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
+            $ingressResourcePath = '/apis/networking.k8s.io/v1beta1/ingresses';
+            $ingressResourceWatchPath = '/apis/networking.k8s.io/v1beta1/watch/ingresses';
+        } else {
+            $ingressResourcePath = '/apis/extensions/v1beta1/ingresses';
+            $ingressResourceWatchPath = '/apis/extensions/v1beta1/watch/ingresses';
+        }
+
         // initial load of ingresses
         $params = [
             'labelSelector' => $ingressLabelSelector,
             'fieldSelector' => $ingressFieldSelector,
         ];
-        $ingresses = $controller->getKubernetesClient()->request('/apis/extensions/v1beta1/ingresses', 'GET', $params);
+        $ingresses = $controller->getKubernetesClient()->request($ingressResourcePath, 'GET', $params);
         $this->state['resources'] = $ingresses['items'];
 
         // watch for ingress changes
@@ -42,7 +53,7 @@ class DNSIngresses extends PfSenseAbstract
             'fieldSelector' => $ingressFieldSelector,
             'resourceVersion' => $ingresses['metadata']['resourceVersion'],
         ];
-        $watch = $controller->getKubernetesClient()->createWatch('/apis/extensions/v1beta1/watch/ingresses', $params, $this->getWatchCallback('resources'));
+        $watch = $controller->getKubernetesClient()->createWatch($ingressResourceWatchPath, $params, $this->getWatchCallback('resources'));
         $this->addWatch($watch);
         $this->delayedAction();
     }
