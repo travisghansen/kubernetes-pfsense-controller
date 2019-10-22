@@ -139,6 +139,11 @@ require_once("/usr/local/pkg/haproxy/haproxy.inc");
 $messages = null;
 $reload = 1;
 $ok = haproxy_check_and_run($messages, $reload);
+
+if($messages == null) {
+	$messages = "";
+}
+
 $toreturn = [
     'ok' => $ok,
     'messages' => $messages,
