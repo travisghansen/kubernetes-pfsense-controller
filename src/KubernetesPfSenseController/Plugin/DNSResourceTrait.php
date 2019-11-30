@@ -142,9 +142,17 @@ trait DNSResourceTrait
         $this->buildResourceHosts($oldResourceHosts, $oldItem);
         $this->buildResourceHosts($newResourceHosts, $item);
 
-        if (md5(json_encode($oldResourceHosts)) != md5(json_encode($newResourceHosts))) {
-            return false;
+        foreach ($oldResourceHosts as $host => $value) {
+            $oldResourceHosts[$host] = ['ip' => $value['ip']];
         }
-        return true;
+
+        foreach ($newResourceHosts as $host => $value) {
+            $newResourceHosts[$host] = ['ip' => $value['ip']];
+        }
+
+        if (md5(json_encode($oldResourceHosts)) != md5(json_encode($newResourceHosts))) {
+            return true;
+        }
+        return false;
     }
 }
