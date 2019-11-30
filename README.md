@@ -8,6 +8,8 @@ This is generally achieved using the standard Kubernetes API along with the xmlr
 the Kubernetes API is `watch`ed and appropriate updates are sent to pfSense (`config.xml`) via xmlrpc calls along with
 appropriate reload/restart/update/sync actions to apply changes.
 
+Please note, this controller is not designed to run multiple instances simultaneously (ie: do NOT crank up the replicas).
+
 Disclaimer: this is new software bound to have bugs.  Please make a backup before using it as it may eat your
 configuration.  Having said that, all known code paths appear to be solid and working without issue.  If you find a bug,
 please report it! 

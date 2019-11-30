@@ -55,6 +55,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         ];
         $options = [
             'trigger' => false,
+            'log' => true
         ];
         $watch = $controller->getKubernetesClient()->createWatch($ingressResourceWatchPath, $params, $this->getWatchCallback('ingresses', $options));
         $this->addWatch($watch);

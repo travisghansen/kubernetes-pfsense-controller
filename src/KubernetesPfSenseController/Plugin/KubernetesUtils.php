@@ -68,6 +68,28 @@ class KubernetesUtils
     }
 
     /**
+     * Get apiVersion property from resource
+     *
+     * @param $resource
+     * @return mixed
+     */
+    public static function getResourceApiVersion($resource)
+    {
+        return $resource['apiVersion'];
+    }
+
+    /**
+     * Get kind property from resource
+     *
+     * @param $resource
+     * @return mixed
+     */
+    public static function getResourceKind($resource)
+    {
+        return $resource['kind'];
+    }
+
+    /**
      * Get selfLink property from resource
      *
      * @param $resource

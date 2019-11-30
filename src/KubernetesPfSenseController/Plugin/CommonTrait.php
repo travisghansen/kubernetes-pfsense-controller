@@ -109,9 +109,19 @@ trait CommonTrait
             switch ($event['type']) {
                 case 'ADDED':
                 case 'MODIFIED':
+                    $result = KubernetesUtils::findListItem($items, $item['metadata']['name']);
+                    $itemKey = $result['key'];
+                    $oldItem = $result['item'];
+
                     KubernetesUtils::putListItem($items, $item);
                     if ($trigger) {
-                        $this->delayedAction();
+                        $shouldTriggerFromWatchUpdate = true;
+                        if ($itemKey !== null && method_exists($this, 'shouldTriggerFromWatchUpdate')) {
+                            $shouldTriggerFromWatchUpdate = $this->shouldTriggerFromWatchUpdate($oldItem, $item);
+                        }
+                        if ($shouldTriggerFromWatchUpdate) {
+                            $this->delayedAction();
+                        }
                     }
                     break;
                 case 'DELETED':
@@ -137,11 +147,15 @@ trait CommonTrait
      */
     protected function getKubernetesResourceDetails($resource)
     {
+        $apiVersion = KubernetesUtils::getResourceApiVersion($resource);
+        $kind = KubernetesUtils::getResourceKind($resource);
         $name = KubernetesUtils::getResourceName($resource);
         $namespace = KubernetesUtils::getResourceNamespace($resource);
         $selfLink = KubernetesUtils::getResourceSelfLink($resource);
 
         $values = [
+            //'apiVersion' => $apiVersion,
+            //'kind' => $kind,
             'selfLink' => $selfLink,
             'name' => $name,
         ];

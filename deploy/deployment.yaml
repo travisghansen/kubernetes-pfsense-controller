@@ -1,11 +1,14 @@
 ---
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: kubernetes-pfsense-controller
   namespace: kube-system
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: kubernetes-pfsense-controller
   strategy:
     type: Recreate
   template:
@@ -16,7 +19,7 @@ spec:
       serviceAccountName: kubernetes-pfsense-controller
       containers:
         - name: kubernetes-pfsense-controller
-          image: docker.io/travisghansen/kubernetes-pfsense-controller:v0.1.5
+          image: docker.io/travisghansen/kubernetes-pfsense-controller:v0.1.9
           env:
             - name: PFSENSE_URL
               value: "https://192.168.1.1"

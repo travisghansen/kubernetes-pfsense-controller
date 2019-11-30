@@ -53,7 +53,7 @@ class DNSIngresses extends PfSenseAbstract
             'fieldSelector' => $ingressFieldSelector,
             'resourceVersion' => $ingresses['metadata']['resourceVersion'],
         ];
-        $watch = $controller->getKubernetesClient()->createWatch($ingressResourceWatchPath, $params, $this->getWatchCallback('resources'));
+        $watch = $controller->getKubernetesClient()->createWatch($ingressResourceWatchPath, $params, $this->getWatchCallback('resources', ['log' => true]));
         $this->addWatch($watch);
         $this->delayedAction();
     }

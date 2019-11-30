@@ -68,6 +68,9 @@ trait DNSResourceTrait
 
             if ($dnsmasqEnabled) {
                 $dnsmasqConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'dnsmasq');
+                if (!is_array($dnsmasqConfig->data['hosts'])) {
+                    $dnsmasqConfig->data['hosts'] = [];
+                }
                 foreach ($hosts as $host) {
                     Utils::putListItemMultiKey($dnsmasqConfig->data['hosts'], $host, ['host', 'domain']);
                 }
@@ -83,6 +86,9 @@ trait DNSResourceTrait
 
             if ($unboundEnabled) {
                 $unboundConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'unbound');
+                if (!is_array($unboundConfig->data['hosts'])) {
+                    $unboundConfig->data['hosts'] = [];
+                }
                 foreach ($hosts as $host) {
                     Utils::putListItemMultiKey($unboundConfig->data['hosts'], $host, ['host', 'domain']);
                 }
@@ -118,5 +124,27 @@ trait DNSResourceTrait
             $this->log('failed update/reload: '.$e->getMessage().' ('.$e->getCode().')');
             return false;
         }
+    }
+
+    /**
+     * Does a sanity check to prevent over-aggressive updates when watch resources are technically
+     * modified but the things we care about are not
+     *
+     * @param $oldItem
+     * @param $item
+     * @return bool
+     */
+    public function shouldTriggerFromWatchUpdate($oldItem, $item)
+    {
+        $oldResourceHosts = [];
+        $newResourceHosts = [];
+
+        $this->buildResourceHosts($oldResourceHosts, $oldItem);
+        $this->buildResourceHosts($newResourceHosts, $item);
+
+        if (md5(json_encode($oldResourceHosts)) != md5(json_encode($newResourceHosts))) {
+            return false;
+        }
+        return true;
     }
 }
