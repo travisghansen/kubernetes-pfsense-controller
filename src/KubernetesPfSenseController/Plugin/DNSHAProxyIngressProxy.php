@@ -46,7 +46,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
         // initial load of ingresses
         $params = [];
-        $ingresses = $controller->getKubernetesClient()->request($ingressResourcePath, 'GET', $params);
+        $ingresses = $controller->getKubernetesClient()->createList($ingressResourcePath, $params)->get();
         $this->state['ingresses'] = $ingresses['items'];
 
         // watch for ingress changes
@@ -125,12 +125,12 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         }
         $hosts = [];
         foreach ($ingressProxyPluginStore['managed_frontends'] as $frontendName => $frontendDetails) {
+            $hosts[$frontendName] = [];
             $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'];
             $hostName = $pluginConfig['frontends'][$primaryFrontendName]['hostname'];
             $ingress = KubernetesUtils::getResourceByNamespaceName($this->state['ingresses'], $frontendDetails['resource']['namespace'], $frontendDetails['resource']['name']);
             if (!empty($ingress)) {
                 foreach ($ingress['spec']['rules'] as $rule) {
-                    $hosts[$frontendName] = [];
                     if ($this->shouldCreateAlias($rule['host'])) {
                         $hosts[$frontendName][] = $rule['host'];
                         $managedHostsPreSave[$hostName][] = $rule['host'];
@@ -151,7 +151,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
             $host = null;
             $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'];
             $hostName = $pluginConfig['frontends'][$primaryFrontendName]['hostname'];
-            $itemId = $itemId = [
+            $itemId = [
                 'host' => explode('.', $hostName, 2)[0],
                 'domain' => explode('.', $hostName, 2)[1],
             ];
@@ -168,8 +168,8 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
                     if (empty($hosts[$frontendName])) {
                         $host['aliases'] = '';
                     } else {
+                        $host['aliases'] = [];
                         foreach ($hosts[$frontendName] as $alias) {
-                            $host['aliases'] = [];
                             $host['aliases']['item'][] = [
                                 'host' => explode('.', $alias, 2)[0],
                                 'domain' => explode('.', $alias, 2)[1],
@@ -186,13 +186,13 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
             if ($unboundEnabled) {
                 $host = null;
-                $host = Utils::getListItemMultiKey($unboundConfig->data['hosts'], $itemId, ['host', 'domain']);
+                $host = Utils::getListItemMultiKey($unboundConfig->data['hosts'], $itemId, $itemKey);
                 if ($host !== null) {
                     if (empty($hosts[$frontendName])) {
                         $host['aliases'] = '';
                     } else {
+                        $host['aliases'] = [];
                         foreach ($hosts[$frontendName] as $alias) {
-                            $host['aliases'] = [];
                             $host['aliases']['item'][] = [
                                 'host' => explode('.', $alias, 2)[0],
                                 'domain' => explode('.', $alias, 2)[1],
@@ -227,7 +227,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
             if ($unboundEnabled) {
                 $host = null;
-                $host = Utils::getListItemMultiKey($unboundConfig->data['hosts'], $itemId, ['host', 'domain']);
+                $host = Utils::getListItemMultiKey($unboundConfig->data['hosts'], $itemId, $itemKey);
                 if ($host !== null) {
                     $host['aliases'] = '';
                     Utils::putListItemMultiKey($unboundConfig->data['hosts'], $host, $itemKey);
@@ -267,6 +267,15 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
      */
     private function shouldCreateAlias($hostName)
     {
+        $ingressProxyPlugin = $this->getController()->getPluginById(HAProxyIngressProxy::getPluginId());
+        $pluginConfig = $ingressProxyPlugin->getConfig();
+        if (!empty($pluginConfig['allowedHostRegex'])) {
+            $allowed = @preg_match($pluginConfig['allowedHostRegex'], $hostName);
+            if ($allowed !== 1) {
+                return false;
+            }
+        }
+
         $pluginConfig = $this->getConfig();
         if (!empty($pluginConfig['allowedHostRegex'])) {
             $allowed = @preg_match($pluginConfig['allowedHostRegex'], $hostName);

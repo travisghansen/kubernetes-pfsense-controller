@@ -37,7 +37,7 @@ class DNSServices extends PfSenseAbstract
             'labelSelector' => $serviceLabelSelector,
             'fieldSelector' => $serviceFieldSelector,
         ];
-        $services = $controller->getKubernetesClient()->request('/api/v1/services', 'GET', $params);
+        $services = $controller->getKubernetesClient()->createList('/api/v1/services', $params)->get();
         $this->state['resources'] = $services['items'];
 
         // watch for service changes

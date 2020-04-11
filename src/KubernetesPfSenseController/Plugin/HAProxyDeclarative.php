@@ -29,7 +29,7 @@ class HAProxyDeclarative extends PfSenseAbstract
         $controller = $this->getController();
 
         // initial load of nodes
-        $nodes = $controller->getKubernetesClient()->request('/api/v1/nodes');
+        $nodes = $controller->getKubernetesClient()->createList('/api/v1/nodes')->get();
         $this->state['nodes'] = $nodes['items'];
 
         // watch for node changes
@@ -43,7 +43,7 @@ class HAProxyDeclarative extends PfSenseAbstract
         $params = [
             'labelSelector' => 'pfsense.org/type=declarative',
         ];
-        $configmaps = $controller->getKubernetesClient()->request('/api/v1/configmaps', 'GET', $params);
+        $configmaps = $controller->getKubernetesClient()->createList('/api/v1/configmaps', $params)->get();
         $this->state['configmaps'] = $configmaps['items'];
 
         // watch for configmap changes
@@ -52,6 +52,14 @@ class HAProxyDeclarative extends PfSenseAbstract
             'resourceVersion' => $configmaps['metadata']['resourceVersion'],
         ];
         $watch = $controller->getKubernetesClient()->createWatch('/api/v1/watch/configmaps', $params, $this->getWatchCallback('configmaps'));
+        $this->addWatch($watch);
+
+        // watch for service changes
+        $services = $controller->getKubernetesClient()->createList('/api/v1/services')->get();
+        $this->state['services'] = $services['items'];
+
+        $params = [];
+        $watch = $controller->getKubernetesClient()->createWatch('/api/v1/watch/services', $params, $this->getWatchCallback('services'));
         $this->addWatch($watch);
 
         $this->delayedAction();
@@ -182,34 +190,31 @@ class HAProxyDeclarative extends PfSenseAbstract
                 $servicePort = $resource['servicePort'];
 
                 $service = $controller->getKubernetesClient()->request("/api/v1/namespaces/${serviceNamespace}/services/${serviceName}");
+
                 $hosts = [];
+                // if service does not exist this is NULL
                 switch ($service['spec']['type']) {
                     case 'LoadBalancer':
-                        $hosts[] = [
-                            'name' => $service['metadata']['name'],
-                            'address' => $service['status']['loadBalancer']['ingress'][0]['ip'],
-                            'port' => $servicePort
-                        ];
-                        break;
-                    case 'NodePort':
-                        $port = null;
-                        foreach ($service['spec']['ports'] as $item) {
-                            if ($item['port'] == $servicePort) {
-                                $port = $item['nodePort'];
-                                break;
-                            }
-                        }
-
-                        foreach ($this->state['nodes'] as $node) {
+                        $port = self::getServicePortForHAProxy($service, $servicePort);
+                        if ($port) {
                             $hosts[] = [
-                                'name' => $node['metadata']['name'],
-                                'address' => KubernetesUtils::getNodeIp($node),
+                                'name' => $service['metadata']['name'],
+                                'address' => $service['status']['loadBalancer']['ingress'][0]['ip'],
                                 'port' => $port
                             ];
                         }
                         break;
-                    default:
-
+                    case 'NodePort':
+                        $port = self::getServicePortForHAProxy($service, $servicePort);
+                        if ($port) {
+                            foreach ($this->state['nodes'] as $node) {
+                                $hosts[] = [
+                                    'name' => $node['metadata']['name'],
+                                    'address' => KubernetesUtils::getNodeIp($node),
+                                    'port' => $port
+                                ];
+                            }
+                        }
                         break;
                 }
 
@@ -241,6 +246,105 @@ class HAProxyDeclarative extends PfSenseAbstract
                 }
 
                 return $expanded_backend;
+                break;
+        }
+    }
+
+    /**
+     * Does a sanity check to prevent over-aggressive updates when watch resources are technically
+     * modified but the things we care about are not
+     *
+     * @param $event
+     * @param $oldItem
+     * @param $item
+     * @param $stateKey
+     * @param $options
+     * @return bool
+     */
+    public function shouldTriggerFromWatchUpdate($event, $oldItem, $item, $stateKey, $options = [])
+    {
+        switch ($stateKey) {
+            case 'services':
+                // abort immediately if not relevant to plugin
+                if (!$this->serviceIsUsedByHAProxy($item)) {
+                    return false;
+                }
+
+                // ADDED / DELETED
+                if ($oldItem === null) {
+                    return true;
+                }
+
+                // various triggers from updates
+                if ($oldItem !== null) {
+                    // type changes
+                    if ($oldItem['spec']['type'] !== $item['spec']['type']) {
+                        return true;
+                    }
+
+                    // ip changes for LoadBalancer services
+                    if ($oldItem['spec']['type'] == "LoadBalancer" && $item['spec']['type'] == "LoadBalancer") {
+                        if ($oldItem['status']['loadBalancer']['ingress'][0]['ip'] != $item['status']['loadBalancer']['ingress'][0]['ip']) {
+                            return true;
+                        }
+                    }
+
+                    // port changes
+                    $oldPortHash = md5(json_encode($oldItem['spec']['ports']));
+                    $newPortHash = md5(json_encode($item['spec']['ports']));
+                    if ($oldPortHash != $newPortHash) {
+                        return true;
+                    }
+                }
+
+                return false;
+                break;
+        }
+
+        return true;
+    }
+
+    private function serviceIsUsedByHAProxy($service)
+    {
+        foreach ($this->state['configmaps'] as $configmap) {
+            foreach (yaml_parse($configmap['data']['data'])['resources'] as $resource) {
+                switch ($resource['type']) {
+                    case 'backend':
+                        foreach ($resource['ha_servers'] as $server) {
+                            if ($server['type'] == 'node-service') {
+                                $serviceNamespace = ($server['serviceNamespace']) ? $server['serviceNamespace'] : $configmap['metadata']['namespace'];
+                                $serviceName = $server['serviceName'];
+                                if ($service['metadata']['name'] == $serviceName && $service['metadata']['namespace'] == $serviceNamespace) {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static function getServicePortForHAProxy($service, $servicePort)
+    {
+        switch ($service['spec']['type']) {
+            case 'LoadBalancer':
+                foreach ($service['spec']['ports'] as $item) {
+                    if ($item['port'] == $servicePort || $item['name'] == $servicePort) {
+                        return $item['port'];
+                        break;
+                    }
+                }
+                break;
+            case 'NodePort':
+                foreach ($service['spec']['ports'] as $item) {
+                    if ($item['port'] == $servicePort || $item['name'] == $servicePort) {
+                        return $item['nodePort'];
+                        break;
+                    }
+                }
                 break;
         }
     }

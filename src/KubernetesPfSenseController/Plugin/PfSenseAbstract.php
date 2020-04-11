@@ -67,6 +67,39 @@ EOT;
     }
 
     /**
+     * Reload frr bgp service
+     *
+     * @throws \Exception
+     */
+    protected function reloadFrrBgp()
+    {
+        try {
+            $code = <<<'EOT'
+require_once("/usr/local/pkg/frr.inc");
+frr_generate_config_bgp();
+restart_service_if_running("FRR bgpd");
+
+$messages = null;
+$ok = true;
+
+if($messages == null) {
+	$messages = "";
+}
+
+$toreturn = [
+    'ok' => $ok,
+    'messages' => $messages,
+];
+EOT;
+            $this->pfSenseExecPhp($code);
+            $this->log('successfully reloaded frr bgp service');
+        } catch (\Exception $e) {
+            $this->log('failed reload frr bgp service: '.$e->getMessage().' ('.$e->getCode().')');
+            throw $e;
+        }
+    }
+
+    /**
      * Reload dnsmasq service
      *
      * @throws \Exception

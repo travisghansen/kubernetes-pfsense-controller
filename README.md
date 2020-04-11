@@ -24,14 +24,18 @@ combination of Layer2 or BGP type configurations.  Layer2 requires no integratio
 leverage the BGP implementation you need a BGP server along with neighbor configuration.  `kpc` *dynamically* updates
 bgp neighbors for you in pfSense by continually monitoring cluster `Node`s.
 
-The plugin assumes you've already installed openbgp and configured it as well as created a `group` to use with MetalLB.
+The plugin assumes you've already installed openbgp or frr and configured it as well as created a `group` to use with
+MetalLB.
 
 ```yaml
       metallb:
         enabled: true
         nodeLabelSelector:
         nodeFieldSelector:
+        #configMap: "metallb-system/config"
+        # pick 1 implementation
         bgp-implementation: openbgp
+        # bgp-implementation: frr
         options:
           openbgp:
             template:
@@ -41,13 +45,16 @@ The plugin assumes you've already installed openbgp and configured it as well as
               row:
                 - parameters: announce all
                   parmvalue:
+          frr:
+            template:
+              peergroup: metallb
 ```
 
 ## haproxy-declarative
 `haproxy-declarative` plugin allows you to declaratively create HAProxy frontend/backend definitions as `ConfigMap`
 resources in the cluster.  When declaring backends however, the pool of servers can/will be dynamically created/updated
 based on cluster nodes.  See [declarative-example.yaml](examples/declarative-example.yaml) for an example.
- 
+
 ```yaml
       haproxy-declarative:
         enabled: true

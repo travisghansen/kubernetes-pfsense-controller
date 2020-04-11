@@ -130,12 +130,19 @@ trait DNSResourceTrait
      * Does a sanity check to prevent over-aggressive updates when watch resources are technically
      * modified but the things we care about are not
      *
+     * @param $event
      * @param $oldItem
      * @param $item
+     * @param $stateKey
+     * @param $options
      * @return bool
      */
-    public function shouldTriggerFromWatchUpdate($oldItem, $item)
+    public function shouldTriggerFromWatchUpdate($event, $oldItem, $item, $stateKey, $options = [])
     {
+        // will be NULL for ADDED and DELETED
+        if ($oldItem === null) {
+            return true;
+        }
         $oldResourceHosts = [];
         $newResourceHosts = [];
 

@@ -12,7 +12,10 @@ data:
         enabled: true
         nodeLabelSelector:
         nodeFieldSelector:
+        #configMap: "metallb-system/config"
+        # pick 1 implementation
         bgp-implementation: openbgp
+        # bgp-implementation: frr
         options:
           openbgp:
             # pass through to config.xml
@@ -23,6 +26,9 @@ data:
               row:
                 - parameters: announce all
                   parmvalue:
+          frr:
+            template:
+              peergroup: metallb
       haproxy-declarative:
         enabled: true
       haproxy-ingress-proxy:

@@ -68,7 +68,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
             'labelSelector' => $ingressLabelSelector,
             'fieldSelector' => $ingressFieldSelector,
         ];
-        $ingresses = $controller->getKubernetesClient()->request($ingressResourcePath, 'GET', $params);
+        $ingresses = $controller->getKubernetesClient()->createList($ingressResourcePath, $params)->get();
         $this->state['ingresses'] = $ingresses['items'];
 
         // watch for ingress changes
@@ -234,6 +234,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
                 $managedFrontendNamesPreSave[] = $frontend['name'];
                 $managedFrontendsPreSave[$frontend['name']] = [
                     'resource' => $this->getKubernetesResourceDetails($frontend['_resource']),
+                    'acls' => $frontend['ha_acls']['item'],
                 ];
                 unset($frontend['_resource']);
                 if (!$haProxyConfig->frontendExists($frontend['name'])) {

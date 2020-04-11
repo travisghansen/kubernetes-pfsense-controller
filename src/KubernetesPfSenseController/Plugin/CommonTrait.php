@@ -112,17 +112,8 @@ trait CommonTrait
                     $result = KubernetesUtils::findListItem($items, $item['metadata']['name']);
                     $itemKey = $result['key'];
                     $oldItem = $result['item'];
-
                     KubernetesUtils::putListItem($items, $item);
-                    if ($trigger) {
-                        $shouldTriggerFromWatchUpdate = true;
-                        if ($itemKey !== null && method_exists($this, 'shouldTriggerFromWatchUpdate')) {
-                            $shouldTriggerFromWatchUpdate = $this->shouldTriggerFromWatchUpdate($oldItem, $item);
-                        }
-                        if ($shouldTriggerFromWatchUpdate) {
-                            $this->delayedAction();
-                        }
-                    }
+
                     break;
                 case 'DELETED':
                     $result = KubernetesUtils::findListItem($items, $item['metadata']['name'], $item['metadata']['namespace']);
@@ -130,11 +121,22 @@ trait CommonTrait
                     if ($itemKey !== null) {
                         unset($items[$itemKey]);
                         $items = array_values($items);
-                        if ($trigger) {
-                            $this->delayedAction();
-                        }
                     }
                     break;
+            }
+
+            if ($trigger) {
+                $shouldTriggerFromWatchUpdate = true;
+                /**
+                 * NOTE: usage of $stateKey and $options here allows 'outside' user to set arbitrary data that
+                 * can be used for correlation purposes etc
+                 */
+                if (method_exists($this, 'shouldTriggerFromWatchUpdate')) {
+                    $shouldTriggerFromWatchUpdate = $this->shouldTriggerFromWatchUpdate($event, $oldItem, $item, $stateKey, $options);
+                }
+                if ($shouldTriggerFromWatchUpdate) {
+                    $this->delayedAction();
+                }
             }
         };
     }

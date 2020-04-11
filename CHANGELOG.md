@@ -1,3 +1,16 @@
+# v0.2.0
+
+Released 2020-04-11
+
+- use `->createList()` vs simple `->request()` throughout to support resource types that may have many resources
+- fix multi-host issues with `pfsense-dns-haproxy-ingress-proxy` (see #8)
+- Allow setting `CONTROLLER_NAME` and `CONTROLLER_NAMESPACE` `env` vars to support multiple deploys and deployments to
+alternative namespaces (see #7)
+- support the `frr` `bgp-implementation` for `metallb` plugin
+- support custom `configMap` for `metallb` plugin
+- better logic for `haproxy-declarative` to support service changes including being created **after** the `ConfigMap`
+- support service port names (vs port number) in `haproxy-declarative` `ConfigMap`s
+
 # v0.1.9
 
 Released 2019-11-30

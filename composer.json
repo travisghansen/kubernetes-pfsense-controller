@@ -17,7 +17,7 @@
         "ext-json": "*",
         "ext-bz2": "*",
         "travisghansen/kubernetes-controller-php": "0.1.*",
-        "travisghansen/kubernetes-client-php": "0.1.*",
+        "travisghansen/kubernetes-client-php": "0.2.*",
         "zendframework/zend-xmlrpc": "^2.7",
         "vlucas/phpdotenv": "^2.5",
         "composer/semver": "^1.5"

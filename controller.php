@@ -42,14 +42,28 @@ if ($pfSenseInsecure) {
 }
 
 // setup controller
-$controllerName = 'kubernetes-pfsense-controller';
+if (getenv('CONTROLLER_NAME')) {
+    $controllerName = getenv('CONTROLLER_NAME');
+} else {
+    $controllerName = 'kubernetes-pfsense-controller';
+}
+
+if (getenv('CONTROLLER_NAMESPACE')) {
+    $controllerNamespace = getenv('CONTROLLER_NAMESPACE');
+} else {
+    $controllerNamespace = 'kube-system';
+}
+
+
 $options = [
-    //'configMapNamespace' => 'kube-system',
+    'configMapNamespace' => $controllerNamespace,
     //'configMapName' => $controllerName.'-controller-config',
     //'storeEnabled' => true,
-    //'storeNamespace' => 'kube-system',
+    'storeNamespace' => $controllerNamespace,
     //'storeName' => $controllerName.'-controller-store',
 ];
+
+// expose the above
 
 $controller = new KubernetesPfSenseController\Controller($controllerName, $kubernetesClient, $options);
 $kubernetesClient = $controller->getKubernetesClient();

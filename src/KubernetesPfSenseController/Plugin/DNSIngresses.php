@@ -44,7 +44,7 @@ class DNSIngresses extends PfSenseAbstract
             'labelSelector' => $ingressLabelSelector,
             'fieldSelector' => $ingressFieldSelector,
         ];
-        $ingresses = $controller->getKubernetesClient()->request($ingressResourcePath, 'GET', $params);
+        $ingresses = $controller->getKubernetesClient()->createList($ingressResourcePath, $params)->get();
         $this->state['resources'] = $ingresses['items'];
 
         // watch for ingress changes
