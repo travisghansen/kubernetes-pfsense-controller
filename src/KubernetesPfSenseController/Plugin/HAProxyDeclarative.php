@@ -275,26 +275,23 @@ class HAProxyDeclarative extends PfSenseAbstract
                     return true;
                 }
 
-                // various triggers from updates
-                if ($oldItem !== null) {
-                    // type changes
-                    if ($oldItem['spec']['type'] !== $item['spec']['type']) {
+                // type changes
+                if ($oldItem['spec']['type'] !== $item['spec']['type']) {
+                    return true;
+                }
+
+                // ip changes for LoadBalancer services
+                if ($oldItem['spec']['type'] == "LoadBalancer" && $item['spec']['type'] == "LoadBalancer") {
+                    if ($oldItem['status']['loadBalancer']['ingress'][0]['ip'] != $item['status']['loadBalancer']['ingress'][0]['ip']) {
                         return true;
                     }
+                }
 
-                    // ip changes for LoadBalancer services
-                    if ($oldItem['spec']['type'] == "LoadBalancer" && $item['spec']['type'] == "LoadBalancer") {
-                        if ($oldItem['status']['loadBalancer']['ingress'][0]['ip'] != $item['status']['loadBalancer']['ingress'][0]['ip']) {
-                            return true;
-                        }
-                    }
-
-                    // port changes
-                    $oldPortHash = md5(json_encode($oldItem['spec']['ports']));
-                    $newPortHash = md5(json_encode($item['spec']['ports']));
-                    if ($oldPortHash != $newPortHash) {
-                        return true;
-                    }
+                // port changes
+                $oldPortHash = md5(json_encode($oldItem['spec']['ports']));
+                $newPortHash = md5(json_encode($item['spec']['ports']));
+                if ($oldPortHash != $newPortHash) {
+                    return true;
                 }
 
                 return false;

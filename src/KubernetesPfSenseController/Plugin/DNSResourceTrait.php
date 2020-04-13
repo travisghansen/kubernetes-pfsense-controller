@@ -139,27 +139,44 @@ trait DNSResourceTrait
      */
     public function shouldTriggerFromWatchUpdate($event, $oldItem, $item, $stateKey, $options = [])
     {
-        // will be NULL for ADDED and DELETED
-        if ($oldItem === null) {
-            return true;
-        }
-        $oldResourceHosts = [];
-        $newResourceHosts = [];
+        if ($stateKey == "resources") {
+            // will be NULL for ADDED and DELETED
+            if ($oldItem === null) {
+                $tmpResourceHosts = [];
+                switch ($event['type']) {
+                    case "ADDED":
+                    case "DELETED":
+                        $this->buildResourceHosts($tmpResourceHosts, $item);
+                        if (count($tmpResourceHosts) > 0) {
+                            return true;
+                        }
+                        break;
+                }
 
-        $this->buildResourceHosts($oldResourceHosts, $oldItem);
-        $this->buildResourceHosts($newResourceHosts, $item);
+                return false;
+            }
 
-        foreach ($oldResourceHosts as $host => $value) {
-            $oldResourceHosts[$host] = ['ip' => $value['ip']];
+            $oldResourceHosts = [];
+            $newResourceHosts = [];
+
+            $this->buildResourceHosts($oldResourceHosts, $oldItem);
+            $this->buildResourceHosts($newResourceHosts, $item);
+
+            foreach ($oldResourceHosts as $host => $value) {
+                $oldResourceHosts[$host] = ['ip' => $value['ip']];
+            }
+
+            foreach ($newResourceHosts as $host => $value) {
+                $newResourceHosts[$host] = ['ip' => $value['ip']];
+            }
+
+            if (md5(json_encode($oldResourceHosts)) != md5(json_encode($newResourceHosts))) {
+                return true;
+            }
+
+            return false;
         }
 
-        foreach ($newResourceHosts as $host => $value) {
-            $newResourceHosts[$host] = ['ip' => $value['ip']];
-        }
-
-        if (md5(json_encode($oldResourceHosts)) != md5(json_encode($newResourceHosts))) {
-            return true;
-        }
         return false;
     }
 }

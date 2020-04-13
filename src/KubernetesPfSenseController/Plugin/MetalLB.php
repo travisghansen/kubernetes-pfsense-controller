@@ -174,18 +174,18 @@ class MetalLB extends PfSenseAbstract
                         'groupname' => (string) $template['groupname'],
                     ];
                     $template = array_merge($defaults, $template);
-                    $template = array_map(function($v){
+                    $template = array_map(function ($v) {
                         return $v ?: '';
-                    },$template);
+                    }, $template);
                     break;
                 case 'frr':
                     $defaults = [
                         "sendcommunity" => "disabled",
                     ];
                     $template = array_merge($defaults, $template);
-                    $template = array_map(function($v){
+                    $template = array_map(function ($v) {
                         return $v ?: '';
-                    },$template);
+                    }, $template);
                     break;
             }
 
