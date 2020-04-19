@@ -39,6 +39,9 @@ class Utils
     {
         foreach ($list as $key => $item) {
             foreach ($itemKeyNames as $itemKeyName) {
+                if (!key_exists($itemKeyName, $item)) {
+                    continue 2;
+                }
                 if ($itemId[$itemKeyName] != $item[$itemKeyName]) {
                     continue 2;
                 }
