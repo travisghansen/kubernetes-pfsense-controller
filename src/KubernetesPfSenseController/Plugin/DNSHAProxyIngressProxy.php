@@ -130,9 +130,8 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         if (empty($managedHosts)) {
             $managedHosts = [];
         }
-        $hosts = [];
+
         foreach ($managedFrontends as $frontendName => $frontendDetails) {
-            $hosts[$frontendName] = [];
             $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'];
             $hostName = $pluginConfig['frontends'][$primaryFrontendName]['hostname'];
 
@@ -145,7 +144,6 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
                             continue;
                         }
 
-                        $hosts[$frontendName][] = $rule['host'];
                         $managedHostsPreSave[$hostName][] = $rule['host'];
                     }
                 }
@@ -166,7 +164,6 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
             }
         }
 
-        //foreach ($hosts as $frontendName => $value) {
         foreach ($managedHostsPreSave as $hostName => $aliases) {
             $itemId = [
                 'host' => explode('.', $hostName, 2)[0],
