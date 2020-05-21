@@ -38,6 +38,11 @@ class HAProxyIngressProxy extends PfSenseAbstract
      */
     const BACKEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/backend';
 
+    /**
+     * Annotation to override default enabled
+     */
+    const ENABLED_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/enabled';
+
     use CommonTrait;
 
     /**
@@ -131,6 +136,27 @@ class HAProxyIngressProxy extends PfSenseAbstract
             $ingressNamespace = $item['metadata']['namespace'];
             $ingressName = $item['metadata']['name'];
             $frontendName = $this->getController()->getControllerId().'-'.$ingressNamespace.'-'.$ingressName;
+
+            if (KubernetesUtils::getResourceAnnotationExists($item, self::ENABLED_ANNOTATION_NAME)) {
+                $ingressProxyEnabledAnnotationValue = KubernetesUtils::getResourceAnnotationValue($item, self::ENABLED_ANNOTATION_NAME);
+                $ingressProxyEnabledAnnotationValue = strtolower($ingressProxyEnabledAnnotationValue);
+
+                if (in_array($ingressProxyEnabledAnnotationValue, ["true", "1"])) {
+                    $ingressProxyEnabled = true;
+                } else {
+                    $ingressProxyEnabled = false;
+                }
+            } else {
+                if (key_exists('defaultEnabled', $pluginConfig)) {
+                    $ingressProxyEnabled = (bool) $pluginConfig['defaultEnabled'];
+                } else {
+                    $ingressProxyEnabled = true;
+                }
+            }
+
+            if (!$ingressProxyEnabled) {
+                continue;
+            }
 
             if (KubernetesUtils::getResourceAnnotationExists($item, self::FRONTEND_ANNOTATION_NAME)) {
                 $sharedFrontendName = KubernetesUtils::getResourceAnnotationValue($item, self::FRONTEND_ANNOTATION_NAME);

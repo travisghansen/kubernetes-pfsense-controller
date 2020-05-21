@@ -81,6 +81,10 @@ and `haproxy-ingress-proxy.pfsense.org/backend` to respectively set the frontend
         enabled: true
         ingressLabelSelector:
         ingressFieldSelector:
+        # works in conjunction with the ingress annotation 'haproxy-ingress.proxy.pfsense.org/enabled'
+        # if defaultEnabled is empty or true, you can disable specific ingresses by setting the annotation to false
+        # if defaultEnabled is false, you can enable specific ingresses by setting the annotation to true
+        defaultEnabled: true
         defaultFrontend: http-80
         defaultBackend: traefik
         #allowedHostRegex: "/.*/"
@@ -119,6 +123,10 @@ support from the ingress controller to set IPs on the ingress resources.
         enabled: true
         ingressLabelSelector:
         ingressFieldSelector:
+        # works in conjunction with the ingress annotation 'dns.pfsense.org/enabled'
+        # if defaultEnabled is empty or true, you can disable specific ingresses by setting the annotation to false
+        # if defaultEnabled is false, you can enable specific ingresses by setting the annotation to true
+        defaultEnabled: true
         #allowedHostRegex: "/.*/"
         dnsBackends:
           dnsmasq:
@@ -138,6 +146,7 @@ sure the static `hostname` created in your DNS service of choice points to the/a
 ```yaml
       pfsense-dns-haproxy-ingress-proxy:
         enabled: true
+        # NOTE: this regex is in *addition* to the regex applied to the haproxy-ingress-proxy plugin
         #allowedHostRegex: "/.*/"
         dnsBackends:
           dnsmasq:

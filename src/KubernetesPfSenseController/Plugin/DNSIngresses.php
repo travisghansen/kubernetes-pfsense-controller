@@ -13,6 +13,11 @@ class DNSIngresses extends PfSenseAbstract
      */
     const PLUGIN_ID = 'pfsense-dns-ingresses';
 
+    /**
+     * Annotation to override default enabled
+     */
+    const ENABLED_ANNOTATION_NAME = 'dns.pfsense.org/enabled';
+
     use CommonTrait;
     use DNSResourceTrait;
 
@@ -97,6 +102,28 @@ class DNSIngresses extends PfSenseAbstract
      */
     public function buildResourceHosts(&$resourceHosts, $ingress)
     {
+        $pluginConfig = $this->getConfig();
+        if (KubernetesUtils::getResourceAnnotationExists($ingress, self::ENABLED_ANNOTATION_NAME)) {
+            $ingressDnsEnabledAnnotationValue = KubernetesUtils::getResourceAnnotationValue($ingress, self::ENABLED_ANNOTATION_NAME);
+            $ingressDnsEnabledAnnotationValue = strtolower($ingressDnsEnabledAnnotationValue);
+
+            if (in_array($ingressDnsEnabledAnnotationValue, ["true", "1"])) {
+                $ingressDnsEnabled = true;
+            } else {
+                $ingressDnsEnabled = false;
+            }
+        } else {
+            if (key_exists('defaultEnabled', $pluginConfig)) {
+                $ingressDnsEnabled = (bool) $pluginConfig['defaultEnabled'];
+            } else {
+                $ingressDnsEnabled = true;
+            }
+        }
+
+        if (!$ingressDnsEnabled) {
+            return;
+        }
+
         $ip = KubernetesUtils::getIngressIp($ingress);
         if (empty($ip)) {
             return;

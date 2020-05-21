@@ -1,3 +1,9 @@
+# v0.3.0
+
+Released 2020-05-21
+
+- introduce annotations on ingresses to support fine-grained control over creating respective DNS/HAProxy assets
+
 # v0.2.0
 
 Released 2020-04-11

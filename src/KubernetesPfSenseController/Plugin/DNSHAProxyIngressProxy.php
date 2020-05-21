@@ -44,6 +44,10 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
             $ingressResourceWatchPath = '/apis/extensions/v1beta1/watch/ingresses';
         }
 
+        $storeNamespace = $controller->getStoreNamespace();
+        $storeName = $controller->getStoreName();
+        $configMapResourceWatchPath = "/api/v1/watch/namespaces/${storeNamespace}/configmaps/${storeName}";
+        
         // initial load of ingresses
         $params = [];
         $ingresses = $controller->getKubernetesClient()->createList($ingressResourcePath, $params)->get();
@@ -58,6 +62,14 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
             'log' => true
         ];
         $watch = $controller->getKubernetesClient()->createWatch($ingressResourceWatchPath, $params, $this->getWatchCallback('ingresses', $options));
+        $this->addWatch($watch);
+
+        $this->state['controller_store'] = [];
+        $options = [
+            'trigger' => false,
+            'log' => true
+        ];
+        $watch = $controller->getKubernetesClient()->createWatch($configMapResourceWatchPath, [], $this->getWatchCallback('controller_store', $options));
         $this->addWatch($watch);
 
         $this->generateHash();
