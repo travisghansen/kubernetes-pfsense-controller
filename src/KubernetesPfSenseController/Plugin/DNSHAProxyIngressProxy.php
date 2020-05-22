@@ -47,7 +47,7 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         $storeNamespace = $controller->getStoreNamespace();
         $storeName = $controller->getStoreName();
         $configMapResourceWatchPath = "/api/v1/watch/namespaces/${storeNamespace}/configmaps/${storeName}";
-        
+
         // initial load of ingresses
         $params = [];
         $ingresses = $controller->getKubernetesClient()->createList($ingressResourcePath, $params)->get();

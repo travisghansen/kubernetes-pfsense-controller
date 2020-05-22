@@ -81,7 +81,7 @@ and `haproxy-ingress-proxy.pfsense.org/backend` to respectively set the frontend
         enabled: true
         ingressLabelSelector:
         ingressFieldSelector:
-        # works in conjunction with the ingress annotation 'haproxy-ingress.proxy.pfsense.org/enabled'
+        # works in conjunction with the ingress annotation 'haproxy-ingress-proxy.pfsense.org/enabled'
         # if defaultEnabled is empty or true, you can disable specific ingresses by setting the annotation to false
         # if defaultEnabled is false, you can enable specific ingresses by setting the annotation to true
         defaultEnabled: true
