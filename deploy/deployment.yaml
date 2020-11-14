@@ -19,7 +19,7 @@ spec:
       serviceAccountName: kubernetes-pfsense-controller
       containers:
         - name: kubernetes-pfsense-controller
-          image: docker.io/travisghansen/kubernetes-pfsense-controller:v0.1.9
+          image: docker.io/travisghansen/kubernetes-pfsense-controller:latest
           env:
             - name: PFSENSE_URL
               value: "https://192.168.1.1"
