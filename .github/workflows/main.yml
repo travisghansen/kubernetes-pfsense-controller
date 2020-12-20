@@ -1,5 +1,7 @@
 # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#github-context
 # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idif
+# https://github.community/t/how-to-get-just-the-tag-name/16241/10
+
 name: CI
 
 on:
@@ -19,6 +21,13 @@ jobs:
         uses: styfle/cancel-workflow-action@0.6.0
         with:
           access_token: ${{ github.token }}
+
+      - name: source info
+        id: source_info
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
 
       - uses: actions/checkout@v2
 
@@ -48,8 +57,8 @@ jobs:
         with:
           # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./releases/kubernetes-pfsense-controller-${{ github.ref }}.phar
-          asset_name: kubernetes-pfsense-controller-${{ github.ref }}.phar
+          asset_path: ./releases/kubernetes-pfsense-controller-${{ steps.source_info.outputs.SOURCE_TAG }}.phar
+          asset_name: kubernetes-pfsense-controller-${{ steps.source_info.outputs.SOURCE_TAG }}.phar
           asset_content_type: application/zip
 
       - name: docker build
