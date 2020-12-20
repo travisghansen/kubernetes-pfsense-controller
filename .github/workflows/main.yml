@@ -1,0 +1,72 @@
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idif
+name: CI
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
+      - next
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: cancel previous runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+
+      - name: application build
+        uses: php-actions/composer@v4
+        with:
+          command: buildphar
+
+      - name: create release
+        id: create_release
+        if: ${{ github.ref == v* }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: upload release asset
+        id: upload-release-asset
+        if: ${{ github.ref == v* }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./releases/kubernetes-pfsense-controller-${{ github.ref }}.phar
+          asset_name: kubernetes-pfsense-controller-${{ github.ref }}.phar
+          asset_content_type: application/zip
+
+      - name: docker build
+        run: |
+          export ARCH=$([ $(uname -m) = "x86_64" ] && echo "amd64" || echo "arm64")
+          mkdir -p ~/.docker/cli-plugins/
+          wget -qO ~/.docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.5.1/buildx-v0.5.1.linux-${ARCH}
+          chmod a+x ~/.docker/cli-plugins/docker-buildx
+          docker info
+          docker buildx version
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          docker buildx create --name xbuilder --use
+          docker buildx inspect --bootstrap
+          .github/bin/docker-release.sh
+
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_CLI_EXPERIMENTAL: enabled
+          DOCKER_BUILD_PLATFORM: linux/amd64,linux/arm/v7,linux/arm64

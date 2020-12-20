@@ -1,4 +1,9 @@
-FROM php:7.3-cli-alpine
+FROM php:7.4-cli-alpine
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+RUN echo "I am running build on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 RUN \
     apk add --no-cache bzip2-dev \
