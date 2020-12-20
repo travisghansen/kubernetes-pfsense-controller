@@ -29,7 +29,7 @@ jobs:
 
       - name: create release
         id: create_release
-        if: ${{ github.ref == v* }}
+        if: ${{ github.ref == "v*" }}
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
 
       - name: upload release asset
         id: upload-release-asset
-        if: ${{ github.ref == v* }}
+        if: ${{ github.ref == "v*" }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
