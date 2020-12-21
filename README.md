@@ -18,7 +18,7 @@ configuration.  Having said that, all known code paths appear to be solid and wo
 please report it! 
 
 Updated disclaimer: this software is no longer very new, but is still bound to have bugs. Continue to make backups as
-appropriate :) Having said that, it's been used for multiple years now on several systems as has yet to do anything
+appropriate :) Having said that, it's been used for multiple years now on several systems and has yet to do anything
 evil.
 
 # Installation
