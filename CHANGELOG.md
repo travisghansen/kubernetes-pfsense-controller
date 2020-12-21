@@ -1,3 +1,11 @@
+# v0.3.3
+
+Released 2020-12-20
+
+- multi-arch docker builds
+- move from travis-ci to github actions
+- created a corresponding chart repo to install with helm
+
 # v0.3.0
 
 Released 2020-05-21

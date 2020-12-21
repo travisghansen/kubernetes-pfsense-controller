@@ -1,3 +1,6 @@
+![Image](https://img.shields.io/docker/pulls/travisghansen/kubernetes-pfsense-controller.svg)
+![Image](https://img.shields.io/github/workflow/status/travisghansen/kubernetes-pfsense-controller/CI?style=flat-square)
+
 # Intro
 [kubernetes-pfsense-controller (kpc)](https://github.com/travisghansen/kubernetes-pfsense-controller) works hard to keep
 [pfSense](https://www.pfsense.org/) and [Kubernetes](https://kubernetes.io/) in sync and harmony.  The primary focus is
@@ -13,6 +16,31 @@ Please note, this controller is not designed to run multiple instances simultane
 Disclaimer: this is new software bound to have bugs.  Please make a backup before using it as it may eat your
 configuration.  Having said that, all known code paths appear to be solid and working without issue.  If you find a bug,
 please report it! 
+
+Updated disclaimer: this software is no longer very new, but is still bound to have bugs. Continue to make backups as
+appropriate :) Having said that, it's been used for multiple years now on several systems as has yet to do anything
+evil.
+
+# Installation
+
+Various files are available in the `deploy` directory of the project, alter to your needs and `kubectl apply`.
+
+Alternatively, a helm repository is provided for convenience:
+
+```
+helm repo add kubernetes-pfsense-controller https://travisghansen.github.io/kubernetes-pfsense-controller-chart/
+helm repo update
+
+# create your own values.yaml file and edit as appropriate
+# https://github.com/travisghansen/kubernetes-pfsense-controller-chart/blob/master/stable/kubernetes-pfsense-controller/values.yaml
+helm upgrade \
+--install \
+--create-namespace \
+--namespace kpc \
+--values values.yaml \
+kpc-primary \
+kubernetes-pfsense-controller/kubernetes-pfsense-controller
+```
 
 # Plugins
 The controller is comprised of several plugins that are enabled/disabled/configured via a Kubernetes ConfigMap.  Details
