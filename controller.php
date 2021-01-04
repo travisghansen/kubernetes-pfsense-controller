@@ -37,6 +37,7 @@ $kubernetesClient = new KubernetesClient\Client($config);
 // pfSense client
 $pfSenseClient = new \KubernetesPfSenseController\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
 $pfSenseClient->getHttpClient()->setAuth($pfSenseUsername, getenv('PFSENSE_PASSWORD'));
+$pfSenseClient->getHttpClient()->setOptions(['timeout' => 60]);
 if ($pfSenseInsecure) {
     $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
 }
