@@ -2,7 +2,7 @@
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-export DOCKER_ORG="travisghansen"
+export DOCKER_ORG="sdhibit"
 export DOCKER_PROJECT="kubernetes-pfsense-controller"
 export DOCKER_REPO="${DOCKER_ORG}/${DOCKER_PROJECT}"
 
