@@ -29,6 +29,7 @@ $pfSenseInsecure = (strtolower(getenv('PFSENSE_INSECURE')) == 'true') ? true : f
 // kubernetes client
 if (getenv('KUBERNETES_SERVICE_HOST')) {
     $config = KubernetesClient\Config::InClusterConfig();
+    $config->setServer(getenv('KUBERNETES_SERVICE_HOST'))
 } else {
     $config = KubernetesClient\Config::BuildConfigFromFile();
 }
