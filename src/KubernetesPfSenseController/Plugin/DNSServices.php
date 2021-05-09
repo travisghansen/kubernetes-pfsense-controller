@@ -93,12 +93,14 @@ class DNSServices extends PfSenseAbstract
         if (!$this->shouldCreateHost($service)) {
             return;
         }
-        $hostName = KubernetesUtils::getServiceHostname($service);
+        $hostNames = KubernetesUtils::getServiceHostname($service);
         $ip = KubernetesUtils::getServiceIp($service);
-        $resourceHosts[$hostName] = [
-            'ip' => $ip,
-            'resource' => $service,
-        ];
+        foreach ($hostNames as $hostName) {
+            $resourceHosts[$hostName] = [
+                'ip' => $ip,
+                'resource' => $service,
+            ];
+        }
     }
 
     /**
@@ -126,11 +128,13 @@ class DNSServices extends PfSenseAbstract
         }
 
         $pluginConfig = $this->getConfig();
-        $hostName = KubernetesUtils::getServiceHostname($service);
+        $hostNames = KubernetesUtils::getServiceHostname($service);
         if (!empty($pluginConfig['allowedHostRegex'])) {
-            $allowed = @preg_match($pluginConfig['allowedHostRegex'], $hostName);
-            if ($allowed !== 1) {
-                return false;
+            foreach ($hostNames as $hostName) {
+                $allowed = @preg_match($pluginConfig['allowedHostRegex'], $hostName);
+                if ($allowed !== 1) {
+                    return false;
+                }
             }
         }
 

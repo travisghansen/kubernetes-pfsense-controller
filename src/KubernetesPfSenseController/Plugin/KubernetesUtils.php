@@ -228,7 +228,7 @@ class KubernetesUtils
     {
         foreach ($service['metadata']['annotations'] as $key => $value) {
             if ($key == self::SERVICE_HOSTNAME_ANNOTATION) {
-                return $value;
+                return explode(",", $value);
             }
         }
     }
