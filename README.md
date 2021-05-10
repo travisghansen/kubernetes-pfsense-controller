@@ -125,9 +125,9 @@ powerful setups/combinations.
 
 ### pfsense-dns-services
 `pfsense-dns-services` watches for services of type `LoadBalancer` that have the annotation `dns.pfsense.org/hostname`
-with the value of the desired hostname.  `kpc` will create the DNS entry in unbound/dnsmasq.  Note that to actually get
-an IP on these services you'll likely need `MetalLB` deployed in the cluster (regardless of the `metallb` plugin running
-or not).
+with the value of the desired hostname (optionally you may specifiy a comma-separated list of hostnames).  `kpc` will
+create the DNS entry in unbound/dnsmasq.  Note that to actually get  an IP on these services you'll likely need
+`MetalLB` deployed in the cluster (regardless of the `metallb` plugin running or not).
 
 ```yaml
       pfsense-dns-services:
