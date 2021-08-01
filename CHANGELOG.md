@@ -1,4 +1,4 @@
-# v0.4.0
+# v0.5.0
 
 Release 2021-07-31
 
@@ -9,6 +9,14 @@ Release 2021-07-31
 - remove all references to `selfLink`
 - support pfSense >= 2.5.2 due to updated xmlrcp method signatures [(link)](https://github.com/pfsense/pfsense/commit/4f26f187d8cc5028646e86fbb95ce91552d062c2)
 - bump various composer packages
+
+# v0.4.0
+
+Release 2021-05-10
+
+- support multiple hostnames for `pfsense-dns-services`
+- bump composer packages
+- build a helm chart
 
 # v0.3.3
 
