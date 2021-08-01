@@ -42,6 +42,14 @@ kpc-primary \
 kubernetes-pfsense-controller/kubernetes-pfsense-controller
 ```
 
+## Support Matrix
+
+Generally speaking `kpc` tracks the most recent versions of both kubernetes and pfSense. Having said that reasonable
+attempts will be made to support older versions of both.
+
+`kpc` currently works with any `2.4+` (known working up to `2.5.2`) version of pfSense and probably very old kubernetes
+versions (known working up to `1.22`).
+
 # Plugins
 The controller is comprised of several plugins that are enabled/disabled/configured via a Kubernetes ConfigMap.  Details
 about each plugin follows below.
