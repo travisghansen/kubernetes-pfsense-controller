@@ -1,3 +1,9 @@
+# v0.5.3
+
+Released 2021-08-01
+
+- handle more stringent type checks by php 8
+
 # v0.5.2
 
 Released 2021-08-01
