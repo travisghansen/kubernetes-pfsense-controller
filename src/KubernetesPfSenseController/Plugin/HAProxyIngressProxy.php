@@ -278,6 +278,8 @@ class HAProxyIngressProxy extends PfSenseAbstract
             $store = [];
         }
 
+        $store['managed_frontends'] = $store['managed_frontends'] ?? [];
+
         // get what we currently manage
         $managedFrontendNames = @array_keys($store['managed_frontends']);
         if (empty($managedFrontendNames)) {
