@@ -2,6 +2,8 @@
 
 namespace KubernetesPfSenseController\Plugin;
 
+use Composer\Semver\Comparator;
+
 /**
  * Object to interact with pfSense configuration data
  *
@@ -13,12 +15,17 @@ class PfSenseConfigBlock
     /**
      * Section type
      */
-    const ROOT_SECTION = 1;
+    public const ROOT_SECTION = 1;
 
     /**
      * Section type
      */
-    const INSTALLED_PACKAGE_SECTION = 2;
+    public const INSTALLED_PACKAGE_SECTION = 2;
+
+    /**
+     * Default value for timeout param of xmlrpc calls
+     */
+    public const DEFAULT_XMLRPC_TIMEOUT = 60;
 
     /**
      * xmlrpc client instance
@@ -148,7 +155,14 @@ class PfSenseConfigBlock
                     break;
             }
 
-            $response = $this->client->call($method, [$data]);
+            $params = [$data];
+
+            // https://github.com/pfsense/pfsense/commit/4f26f187d8cc5028646e86fbb95ce91552d062c2
+            if (Comparator::greaterThanOrEqualTo($this->client->getPfSenseVersion(), '2.5.2')) {
+                $params[] = self::DEFAULT_XMLRPC_TIMEOUT;
+            }
+
+            $response = $this->client->call($method, $params);
             if ($response !== true) {
                 throw new \Exception("failed xmlrpc ${method} call");
             }

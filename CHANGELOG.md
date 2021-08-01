@@ -1,3 +1,15 @@
+# v0.4.0
+
+Release 2021-07-31
+
+- support php 8
+- bump docker images to use php 8
+- replace zend-xmlrpc with laminas-xmlrpc
+- support kubernetes 1.22+ (ingresses v1)
+- remove all references to `selfLink`
+- support pfSense >= 2.5.2 due to updated xmlrcp method signatures [(link)](https://github.com/pfsense/pfsense/commit/4f26f187d8cc5028646e86fbb95ce91552d062c2)
+- bump various composer packages
+
 # v0.3.3
 
 Released 2020-12-20

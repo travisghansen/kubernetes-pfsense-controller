@@ -12,12 +12,11 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class HAProxyDeclarative extends PfSenseAbstract
 {
+    use CommonTrait;
     /**
      * Unique plugin ID
      */
-    const PLUGIN_ID = 'haproxy-declarative';
-
-    use CommonTrait;
+    public const PLUGIN_ID = 'haproxy-declarative';
 
     /**
      * Init the plugin

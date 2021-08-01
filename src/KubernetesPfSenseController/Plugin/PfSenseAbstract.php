@@ -189,7 +189,7 @@ EOT;
             }
 
             if (!empty($response['messages'])) {
-                $this->log('warnings from HAProxy: '.$response['messages']);
+                $this->log('warnings from HAProxy: '. trim($response['messages']));
             }
 
             $this->log('successfully reloaded HAProxy service');

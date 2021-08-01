@@ -18,9 +18,9 @@
         "ext-bz2": "*",
         "travisghansen/kubernetes-controller-php": "0.1.*",
         "travisghansen/kubernetes-client-php": "0.3.*",
-        "zendframework/zend-xmlrpc": "^2.7",
         "vlucas/phpdotenv": "^2.5",
-        "composer/semver": "^1.5"
+        "composer/semver": "^3.2",
+        "laminas/laminas-xmlrpc": "^2.10"
     },
     "autoload": {
         "psr-0": {"KubernetesPfSenseController\\": "src/"}

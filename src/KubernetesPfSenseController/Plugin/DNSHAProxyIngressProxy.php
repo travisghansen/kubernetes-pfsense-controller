@@ -10,10 +10,11 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class DNSHAProxyIngressProxy extends PfSenseAbstract
 {
+    use CommonTrait;
     /**
      * Unique plugin ID
      */
-    const PLUGIN_ID = 'pfsense-dns-haproxy-ingress-proxy';
+    public const PLUGIN_ID = 'pfsense-dns-haproxy-ingress-proxy';
 
     /**
      * Hash of haproxy-ingress-proxy state used to detect changes
@@ -21,8 +22,6 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
      * @var string
      */
     private $hash;
-
-    use CommonTrait;
 
     /**
      * Init the plugin
@@ -36,7 +35,10 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         // 1.20 will kill the old version
         // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
         $kubernetesMajorMinor = $controller->getKubernetesVersionMajorMinor();
-        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
+        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.19')) {
+            $ingressResourcePath = '/apis/networking.k8s.io/v1/ingresses';
+            $ingressResourceWatchPath = '/apis/networking.k8s.io/v1/watch/ingresses';
+        } elseif (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
             $ingressResourcePath = '/apis/networking.k8s.io/v1beta1/ingresses';
             $ingressResourceWatchPath = '/apis/networking.k8s.io/v1beta1/watch/ingresses';
         } else {

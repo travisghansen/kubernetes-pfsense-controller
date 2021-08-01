@@ -13,7 +13,7 @@ class KubernetesUtils
     /**
      * Annotation used to set hostname on services (ie: LoadBalancer services)
      */
-    const SERVICE_HOSTNAME_ANNOTATION = 'dns.pfsense.org/hostname';
+    public const SERVICE_HOSTNAME_ANNOTATION = 'dns.pfsense.org/hostname';
 
     public static function getResourceAnnotationValue($resource, $annotation)
     {
@@ -75,7 +75,7 @@ class KubernetesUtils
      */
     public static function getResourceApiVersion($resource)
     {
-        return $resource['apiVersion'];
+        return isset($resource['apiVersion']) ?? $resource['apiVersion'];
     }
 
     /**
@@ -86,18 +86,7 @@ class KubernetesUtils
      */
     public static function getResourceKind($resource)
     {
-        return $resource['kind'];
-    }
-
-    /**
-     * Get selfLink property from resource
-     *
-     * @param $resource
-     * @return mixed
-     */
-    public static function getResourceSelfLink($resource)
-    {
-        return $resource['metadata']['selfLink'];
+        return isset($resource['kind']) ?? $resource['kind'];
     }
 
     /**
@@ -108,7 +97,7 @@ class KubernetesUtils
      */
     public static function getResourceNamespace($resource)
     {
-        return $resource['metadata']['namespace'];
+        return (isset($resource['metadata']) && isset($resource['metadata']['namespace'])) ?? $resource['metadata']['namespace'];
     }
 
     /**
@@ -119,7 +108,7 @@ class KubernetesUtils
      */
     public static function getResourceName($resource)
     {
-        return $resource['metadata']['name'];
+        return (isset($resource['metadata']) && isset($resource['metadata']['name'])) ?? $resource['metadata']['name'];
     }
 
     public static function getResourceNamespaceHyphenName($resource)
@@ -186,7 +175,7 @@ class KubernetesUtils
      */
     public static function putListItem(&$list, $item)
     {
-        $result = self::findListItem($list, $item['metadata']['name'], $item['metadata']['namespace']);
+        $result = self::findListItem($list, self::getResourceName($item), self::getResourceNamespace($item));
         $itemKey = $result['key'];
 
         if ($itemKey === null) {
@@ -229,7 +218,7 @@ class KubernetesUtils
         foreach ($service['metadata']['annotations'] as $key => $value) {
             if ($key == self::SERVICE_HOSTNAME_ANNOTATION) {
                 $hosts = explode(",", $value);
-                array_walk($hosts, function(&$host){
+                array_walk($hosts, function (&$host) {
                     $host = trim($host);
                 });
                 return $hosts;

@@ -21,11 +21,11 @@ trait CommonTrait
     private function getNodeWatchCallback($stateKey, $options = [])
     {
         return function ($event, $watch) use ($stateKey, $options) {
-            if ($options['log']) {
+            if (isset($options['log']) && $options['log']) {
                 $this->logEvent($event);
             }
 
-            if ($options['trigger'] !== false) {
+            if (!isset($options['trigger']) || $options['trigger'] !== false) {
                 $trigger = true;
             } else {
                 $trigger = false;
@@ -89,11 +89,11 @@ trait CommonTrait
     private function getWatchCallback($stateKey, $options = [])
     {
         return function ($event, $watch) use ($stateKey, $options) {
-            if ($options['log']) {
+            if (isset($options['log']) && $options['log']) {
                 $this->logEvent($event);
             }
 
-            if ($options['trigger'] !== false) {
+            if (!isset($options['trigger']) || $options['trigger'] !== false) {
                 $trigger = true;
             } else {
                 $trigger = false;
@@ -153,12 +153,10 @@ trait CommonTrait
         $kind = KubernetesUtils::getResourceKind($resource);
         $name = KubernetesUtils::getResourceName($resource);
         $namespace = KubernetesUtils::getResourceNamespace($resource);
-        $selfLink = KubernetesUtils::getResourceSelfLink($resource);
 
         $values = [
             //'apiVersion' => $apiVersion,
             //'kind' => $kind,
-            'selfLink' => $selfLink,
             'name' => $name,
         ];
 

@@ -23,27 +23,26 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class HAProxyIngressProxy extends PfSenseAbstract
 {
+    use CommonTrait;
     /**
      * Unique plugin ID
      */
-    const PLUGIN_ID = 'haproxy-ingress-proxy';
+    public const PLUGIN_ID = 'haproxy-ingress-proxy';
 
     /**
      * Annotation to override default frontend
      */
-    const FRONTEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/frontend';
+    public const FRONTEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/frontend';
 
     /**
      * Annotation to override default backend
      */
-    const BACKEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/backend';
+    public const BACKEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/backend';
 
     /**
      * Annotation to override default enabled
      */
-    const ENABLED_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/enabled';
-
-    use CommonTrait;
+    public const ENABLED_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/enabled';
 
     /**
      * Init the plugin
@@ -60,7 +59,10 @@ class HAProxyIngressProxy extends PfSenseAbstract
         // 1.20 will kill the old version
         // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
         $kubernetesMajorMinor = $controller->getKubernetesVersionMajorMinor();
-        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
+        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.19')) {
+            $ingressResourcePath = '/apis/networking.k8s.io/v1/ingresses';
+            $ingressResourceWatchPath = '/apis/networking.k8s.io/v1/watch/ingresses';
+        } elseif (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
             $ingressResourcePath = '/apis/networking.k8s.io/v1beta1/ingresses';
             $ingressResourceWatchPath = '/apis/networking.k8s.io/v1beta1/watch/ingresses';
         } else {

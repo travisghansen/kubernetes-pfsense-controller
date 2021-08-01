@@ -10,12 +10,11 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class MetalLB extends PfSenseAbstract
 {
+    use CommonTrait;
     /**
      * Unique plugin ID
      */
-    const PLUGIN_ID = 'metallb';
-
-    use CommonTrait;
+    public const PLUGIN_ID = 'metallb';
 
     /**
      * Init the plugin

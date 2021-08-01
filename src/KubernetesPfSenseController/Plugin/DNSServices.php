@@ -12,13 +12,12 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class DNSServices extends PfSenseAbstract
 {
+    use CommonTrait;
+    use DNSResourceTrait;
     /**
      * Unique plugin ID
      */
-    const PLUGIN_ID = 'pfsense-dns-services';
-
-    use CommonTrait;
-    use DNSResourceTrait;
+    public const PLUGIN_ID = 'pfsense-dns-services';
 
     /**
      * Init the plugin

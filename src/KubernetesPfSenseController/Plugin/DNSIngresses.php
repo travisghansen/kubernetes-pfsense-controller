@@ -8,18 +8,17 @@ namespace KubernetesPfSenseController\Plugin;
  */
 class DNSIngresses extends PfSenseAbstract
 {
+    use CommonTrait;
+    use DNSResourceTrait;
     /**
      * Unique Plugin ID
      */
-    const PLUGIN_ID = 'pfsense-dns-ingresses';
+    public const PLUGIN_ID = 'pfsense-dns-ingresses';
 
     /**
      * Annotation to override default enabled
      */
-    const ENABLED_ANNOTATION_NAME = 'dns.pfsense.org/enabled';
-
-    use CommonTrait;
-    use DNSResourceTrait;
+    public const ENABLED_ANNOTATION_NAME = 'dns.pfsense.org/enabled';
 
     /**
      * Init the plugin
@@ -36,7 +35,10 @@ class DNSIngresses extends PfSenseAbstract
         // 1.20 will kill the old version
         // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
         $kubernetesMajorMinor = $controller->getKubernetesVersionMajorMinor();
-        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
+        if (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.19')) {
+            $ingressResourcePath = '/apis/networking.k8s.io/v1/ingresses';
+            $ingressResourceWatchPath = '/apis/networking.k8s.io/v1/watch/ingresses';
+        } elseif (\Composer\Semver\Comparator::greaterThanOrEqualTo($kubernetesMajorMinor, '1.14')) {
             $ingressResourcePath = '/apis/networking.k8s.io/v1beta1/ingresses';
             $ingressResourceWatchPath = '/apis/networking.k8s.io/v1beta1/watch/ingresses';
         } else {
