@@ -75,7 +75,7 @@ class KubernetesUtils
      */
     public static function getResourceApiVersion($resource)
     {
-        return isset($resource['apiVersion']) ?? $resource['apiVersion'];
+        return $resource['apiVersion'] ?? "";
     }
 
     /**
@@ -86,7 +86,7 @@ class KubernetesUtils
      */
     public static function getResourceKind($resource)
     {
-        return isset($resource['kind']) ?? $resource['kind'];
+        return $resource['kind'] ?? "";
     }
 
     /**
@@ -97,7 +97,7 @@ class KubernetesUtils
      */
     public static function getResourceNamespace($resource)
     {
-        return (isset($resource['metadata']) && isset($resource['metadata']['namespace'])) ?? $resource['metadata']['namespace'];
+        return (isset($resource['metadata']) && isset($resource['metadata']['namespace'])) ? $resource['metadata']['namespace'] : "";
     }
 
     /**
@@ -108,7 +108,7 @@ class KubernetesUtils
      */
     public static function getResourceName($resource)
     {
-        return (isset($resource['metadata']) && isset($resource['metadata']['name'])) ?? $resource['metadata']['name'];
+        return (isset($resource['metadata']) && isset($resource['metadata']['name'])) ? $resource['metadata']['name'] : "";
     }
 
     public static function getResourceNamespaceHyphenName($resource)
@@ -141,7 +141,7 @@ class KubernetesUtils
      * @param $namespace
      * @return array
      */
-    public static function findListItem($list, $name, $namespace = null)
+    public static function findListItem(&$list, $name, $namespace = null)
     {
         $itemKey = null;
         $item = null;
