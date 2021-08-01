@@ -1,3 +1,10 @@
+# v0.5.2
+
+Released 2021-08-01
+
+- update deploy assets to use modern `apiVersion`s
+- handle more stringent type checks by php 8
+
 # v0.5.1
 
 Released 2021-07-31

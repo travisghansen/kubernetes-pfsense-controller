@@ -224,6 +224,14 @@ can be established.  Each `kpc` instance will only require 1 process (ie: access
 
 # Development
 
+## check store values
+
+```
+kubectl -n kube-system get configmaps kubernetes-pfsense-controller-store -o json | jq -crM '.data."haproxy-declarative"' | jq .
+kubectl -n kube-system get configmaps kubernetes-pfsense-controller-store -o json | jq -crM '.data."metallb"' | jq .
+...
+```
+
 ## HAProxy
 XML config structure (note that `ha_backends` is actually frontends...it's badly named):
 ```yaml

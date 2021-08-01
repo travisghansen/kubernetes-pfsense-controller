@@ -214,6 +214,9 @@ class MetalLB extends PfSenseAbstract
 
             // get store data
             $store = $this->getStore();
+            $store[$pluginConfig['bgp-implementation']] = $store[$pluginConfig['bgp-implementation']] ?? [];
+            $store[$pluginConfig['bgp-implementation']]['managed_neighbors'] = $store[$pluginConfig['bgp-implementation']]['managed_neighbors'] ?? [];
+
             $managedNeighborNamesPreSave = @array_keys($managedNeighborsPreSave);
             $managedNeighborNames = @array_keys($store[$pluginConfig['bgp-implementation']]['managed_neighbors']);
             if (empty($managedNeighborNames)) {
