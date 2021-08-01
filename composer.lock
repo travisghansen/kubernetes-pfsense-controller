@@ -1218,16 +1218,16 @@
         },
         {
             "name": "travisghansen/kubernetes-client-php",
-            "version": "v0.3.3",
+            "version": "v0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-client-php.git",
-                "reference": "baa5012193a1e04d54dcf94aab0e31d000cb1e0d"
+                "reference": "677dabb090d1d521b78ec10e4004953ae64d1675"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/baa5012193a1e04d54dcf94aab0e31d000cb1e0d",
-                "reference": "baa5012193a1e04d54dcf94aab0e31d000cb1e0d",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/677dabb090d1d521b78ec10e4004953ae64d1675",
+                "reference": "677dabb090d1d521b78ec10e4004953ae64d1675",
                 "shasum": ""
             },
             "require": {
@@ -1267,22 +1267,22 @@
             ],
             "support": {
                 "issues": "https://github.com/travisghansen/kubernetes-client-php/issues",
-                "source": "https://github.com/travisghansen/kubernetes-client-php/tree/v0.3.3"
+                "source": "https://github.com/travisghansen/kubernetes-client-php/tree/v0.3.4"
             },
-            "time": "2021-07-29T14:05:59+00:00"
+            "time": "2021-08-01T20:07:00+00:00"
         },
         {
             "name": "travisghansen/kubernetes-controller-php",
-            "version": "v0.1.6",
+            "version": "v0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-controller-php.git",
-                "reference": "6c72c6e62186613e1640b7a55289e1a52bc50c2c"
+                "reference": "4f8f6df454be096a6c04ff1ff8501660c8a1d79d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/6c72c6e62186613e1640b7a55289e1a52bc50c2c",
-                "reference": "6c72c6e62186613e1640b7a55289e1a52bc50c2c",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/4f8f6df454be096a6c04ff1ff8501660c8a1d79d",
+                "reference": "4f8f6df454be096a6c04ff1ff8501660c8a1d79d",
                 "shasum": ""
             },
             "require": {
@@ -1318,9 +1318,9 @@
             ],
             "support": {
                 "issues": "https://github.com/travisghansen/kubernetes-controller-php/issues",
-                "source": "https://github.com/travisghansen/kubernetes-controller-php/tree/v0.1.6"
+                "source": "https://github.com/travisghansen/kubernetes-controller-php/tree/v0.1.7"
             },
-            "time": "2021-07-31T23:12:07+00:00"
+            "time": "2021-08-01T20:03:34+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

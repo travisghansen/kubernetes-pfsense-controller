@@ -53,8 +53,8 @@ class HAProxyIngressProxy extends PfSenseAbstract
     {
         $controller = $this->getController();
         $pluginConfig = $this->getConfig();
-        $ingressLabelSelector = $pluginConfig['ingressLabelSelector'];
-        $ingressFieldSelector = $pluginConfig['ingressFieldSelector'];
+        $ingressLabelSelector = $pluginConfig['ingressLabelSelector'] ?? null;
+        $ingressFieldSelector = $pluginConfig['ingressFieldSelector'] ?? null;
 
         // 1.20 will kill the old version
         // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
@@ -274,6 +274,9 @@ class HAProxyIngressProxy extends PfSenseAbstract
 
         // remove frontends created by plugin but no longer needed
         $store = $this->getStore();
+        if (empty($store)) {
+            $store = [];
+        }
 
         // get what we currently manage
         $managedFrontendNames = @array_keys($store['managed_frontends']);

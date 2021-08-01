@@ -28,8 +28,8 @@ class DNSServices extends PfSenseAbstract
     {
         $controller = $this->getController();
         $pluginConfig = $this->getConfig();
-        $serviceLabelSelector = $pluginConfig['serviceLabelSelector'];
-        $serviceFieldSelector = $pluginConfig['serviceFieldSelector'];
+        $serviceLabelSelector = $pluginConfig['serviceLabelSelector'] ?? null;
+        $serviceFieldSelector = $pluginConfig['serviceFieldSelector'] ?? null;
 
         // initial load of services
         $params = [

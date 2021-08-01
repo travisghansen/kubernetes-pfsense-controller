@@ -29,8 +29,8 @@ class DNSIngresses extends PfSenseAbstract
     {
         $controller = $this->getController();
         $pluginConfig = $this->getConfig();
-        $ingressLabelSelector = $pluginConfig['serviceLabelSelector'];
-        $ingressFieldSelector = $pluginConfig['serviceFieldSelector'];
+        $ingressLabelSelector = $pluginConfig['serviceLabelSelector'] ?? null;
+        $ingressFieldSelector = $pluginConfig['serviceFieldSelector'] ?? null;
 
         // 1.20 will kill the old version
         // https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/

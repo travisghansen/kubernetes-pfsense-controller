@@ -118,8 +118,8 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
 
         $pluginConfig = $this->getConfig();
 
-        $dnsmasqEnabled = $pluginConfig['dnsBackends']['dnsmasq']['enabled'];
-        $unboundEnabled = $pluginConfig['dnsBackends']['unbound']['enabled'];
+        $dnsmasqEnabled = $pluginConfig['dnsBackends']['dnsmasq']['enabled'] ?? false;
+        $unboundEnabled = $pluginConfig['dnsBackends']['unbound']['enabled'] ?? false;
 
         // only supported options move along
         if (!$dnsmasqEnabled && !$unboundEnabled) {
@@ -130,6 +130,10 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         $haProxyConfig = HAProxyConfig::getInstalledPackagesConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'haproxy');
 
         $store = $this->getStore();
+        if (empty($store)) {
+            $store = [];
+        }
+
         if (!key_exists('managed_hosts', $store)) {
             $store['managed_hosts'] = [];
         }

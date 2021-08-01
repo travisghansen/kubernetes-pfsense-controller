@@ -52,6 +52,10 @@ trait DNSResourceTrait
         try {
             // get store data
             $store = $this->getStore();
+            if (empty($store)) {
+                $store = [];
+            }
+
             $managedHosts = $store['managed_hosts'];
             if (empty($managedHosts)) {
                 $managedHosts = [];

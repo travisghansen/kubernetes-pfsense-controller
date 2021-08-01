@@ -25,9 +25,9 @@ class MetalLB extends PfSenseAbstract
     {
         $controller = $this->getController();
         $pluginConfig = $this->getConfig();
-        $nodeLabelSelector = $pluginConfig['nodeLabelSelector'];
-        $nodeFieldSelector = $pluginConfig['nodeFieldSelector'];
-        $configMap = ($pluginConfig['configMap']) ? $pluginConfig['configMap'] : "metallb-system/config";
+        $nodeLabelSelector = $pluginConfig['nodeLabelSelector'] ?? null;
+        $nodeFieldSelector = $pluginConfig['nodeFieldSelector'] ?? null;
+        $configMap = $pluginConfig['configMap'] ?? "metallb-system/config";
         $configMapNamespace = explode("/", $configMap)[0];
         $configMapName = explode("/", $configMap)[1];
 
@@ -214,6 +214,10 @@ class MetalLB extends PfSenseAbstract
 
             // get store data
             $store = $this->getStore();
+            if (empty($store)) {
+                $store = [];
+            }
+
             $store[$pluginConfig['bgp-implementation']] = $store[$pluginConfig['bgp-implementation']] ?? [];
             $store[$pluginConfig['bgp-implementation']]['managed_neighbors'] = $store[$pluginConfig['bgp-implementation']]['managed_neighbors'] ?? [];
 

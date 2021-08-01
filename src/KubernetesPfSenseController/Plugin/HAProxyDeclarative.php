@@ -130,6 +130,10 @@ class HAProxyDeclarative extends PfSenseAbstract
 
         // remove resources created by plugin but no longer needed
         $store = $this->getStore();
+        if (empty($store)) {
+            $store = [];
+        }
+
         $managedBackends = $store['managed_backends'];
         if (empty($managedBackends)) {
             $managedBackends = [];
