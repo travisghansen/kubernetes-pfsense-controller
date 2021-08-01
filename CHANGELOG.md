@@ -1,3 +1,9 @@
+# v0.5.1
+
+Released 2021-07-31
+
+- fix faulty null coalescing logic
+
 # v0.5.0
 
 Release 2021-07-31
