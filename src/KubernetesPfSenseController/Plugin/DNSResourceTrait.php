@@ -56,10 +56,7 @@ trait DNSResourceTrait
                 $store = [];
             }
 
-            $managedHosts = $store['managed_hosts'];
-            if (empty($managedHosts)) {
-                $managedHosts = [];
-            }
+            $managedHosts = $store['managed_hosts'] ?? [];
 
             // actually remove them from config
             $toDeleteHosts = array_diff(@array_keys($managedHosts), @array_keys($managedHostsPreSave));
@@ -72,7 +69,7 @@ trait DNSResourceTrait
 
             if ($dnsmasqEnabled) {
                 $dnsmasqConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'dnsmasq');
-                if (!is_array($dnsmasqConfig->data['hosts'])) {
+                if (!isset($dnsmasqConfig->data['hosts']) || !is_array($dnsmasqConfig->data['hosts'])) {
                     $dnsmasqConfig->data['hosts'] = [];
                 }
                 foreach ($hosts as $host) {
@@ -90,7 +87,7 @@ trait DNSResourceTrait
 
             if ($unboundEnabled) {
                 $unboundConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'unbound');
-                if (!is_array($unboundConfig->data['hosts'])) {
+                if (!isset($unboundConfig->data['hosts']) || !is_array($unboundConfig->data['hosts'])) {
                     $unboundConfig->data['hosts'] = [];
                 }
                 foreach ($hosts as $host) {

@@ -142,16 +142,9 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
             $ingressProxyPluginStore = [];
         }
 
-        $managedFrontends = $ingressProxyPluginStore['managed_frontends'];
-        if (empty($managedFrontends)) {
-            $managedFrontends = [];
-        }
-
+        $managedFrontends = $ingressProxyPluginStore['managed_frontends'] ?? [];
         $managedHostsPreSave = [];
-        $managedHosts = $store['managed_hosts'];
-        if (empty($managedHosts)) {
-            $managedHosts = [];
-        }
+        $managedHosts = $store['managed_hosts'] ?? [];
 
         foreach ($managedFrontends as $frontendName => $frontendDetails) {
             $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'];
