@@ -101,6 +101,7 @@ trait CommonTrait
 
             $key = $stateKey;
             $items = &$this->state[$key];
+            $oldItem = null;
 
             $item = $event['object'];
             unset($item['kind']);

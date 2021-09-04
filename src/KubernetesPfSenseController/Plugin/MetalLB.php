@@ -104,7 +104,7 @@ class MetalLB extends PfSenseAbstract
      */
     public function doAction()
     {
-        $metalConfig = $this->state['metallb-config'];
+        $metalConfig = $this->state['metallb-config'] ?? [];
         $pluginConfig = $this->getConfig();
 
         if (empty($metalConfig)) {

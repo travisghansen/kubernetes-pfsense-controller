@@ -193,7 +193,7 @@ class KubernetesUtils
      */
     public static function getServiceIp($service)
     {
-        return $service['status']['loadBalancer']['ingress'][0]['ip'];
+        return $service['status']['loadBalancer']['ingress'][0]['ip'] ?? null;
     }
 
     /**

@@ -147,8 +147,14 @@ class DNSHAProxyIngressProxy extends PfSenseAbstract
         $managedHosts = $store['managed_hosts'] ?? [];
 
         foreach ($managedFrontends as $frontendName => $frontendDetails) {
-            $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'];
-            $hostName = $pluginConfig['frontends'][$primaryFrontendName]['hostname'];
+            $primaryFrontendName = $haProxyConfig->getFrontend($frontendName)['primary_frontend'] ?? null;
+            if (empty($primaryFrontendName)) {
+                continue;
+            }
+            $hostName = $pluginConfig['frontends'][$primaryFrontendName]['hostname'] ?? null;
+            if (empty($hostName)) {
+                continue;
+            }
 
             $ingress = KubernetesUtils::getResourceByNamespaceName($this->state['ingresses'], $frontendDetails['resource']['namespace'], $frontendDetails['resource']['name']);
             if (!empty($ingress)) {

@@ -177,6 +177,31 @@ class HAProxyIngressProxy extends PfSenseAbstract
                 continue;
             }
 
+            // get the type of the shared frontend
+            // NOTE the below do NOT correlate 100% with what is shown on the 'type' column of the 'frontends' tab.
+            // 'https' for example is actually http + ssl offloading checked
+            /*
+            <option value="http">http / https(offloading)</option>
+            <option value="https">ssl / https(TCP mode)</option>
+            <option value="tcp">tcp</option>
+            */
+
+            /**
+             * http - can do l7 rules such as headers, path, etc
+             * https - can only do sni rules
+             * tcp - cannot be used with this application
+             */
+            $sharedFrontend = $haProxyConfig->getFrontend($sharedFrontendName);
+            switch ($sharedFrontend['type']) {
+                case "http":
+                case "https":
+                    // move along
+                    break;
+                default:
+                    $this->log("WARN ${sharedFrontendName} is not a supported type");
+                    continue 2;
+            }
+
             if (!$haProxyConfig->frontendExists($sharedFrontendName)) {
                 if (!in_array($sharedFrontendName, $frontendWarning)) {
                     //$frontendWarning[] = $sharedFrontendName;
@@ -217,7 +242,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
                     //$serviceName = $path['backend']['serviceName'];
                     //$servicePort = $path['backend']['servicePort'];
 
-                    $path = $path['path'];
+                    $path = $path['path'] ?? "";
                     if (empty($path)) {
                         $path = '/';
                     }
@@ -226,9 +251,27 @@ class HAProxyIngressProxy extends PfSenseAbstract
                     $acl = [];
                     $acl['name'] = $aclName;
                     $acl['expression'] = 'custom';
-                    $acl['value'] = "hdr(host) -i ${host} path_beg -i ${path}";
-
-                    $frontend['ha_acls']['item'][] = $acl;
+                    // alter this based on shared frontend type
+                    // if tcp/ssl then do sni-based rule
+                    // https://stackoverflow.com/questions/33085240/haproxy-sni-vs-http-host-acl-check-performance
+                    // req_ssl_sni (types https and tcp both equate to type tcp in the haproxy config), type tcp requires this variant
+                    // ssl_fc_sni (this can be used only with type http)
+                    switch ($sharedFrontend['type']) {
+                        case "http":
+                            $acl['value'] = "hdr(host) -i ${host} path_beg -i ${path}";
+                            $frontend['ha_acls']['item'][] = $acl;
+                            break;
+                        case "https":
+                            $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work and ssl offloading must be enabled");
+                            $acl['value'] = "req_ssl_sni -i ${host}";
+                            $frontend['ha_acls']['item'][] = $acl;
+                            break;
+                        default:
+                            // should never get here based on checks above, but just in case
+                            $this->log("WARN unsupported shared frontend type: ".$sharedFrontend['type']);
+                            continue 3;
+                            break;
+                    }
                 }
 
                 // new action (tied to acl)
