@@ -1,3 +1,10 @@
+# v0.5.6
+
+Released 2021-09-04
+
+- support for sni based routing in `haproxy-ingress-proxy` when type is `https`
+- handle more stringent type checks by php 8
+
 # v0.5.5
 
 Released 2021-08-01

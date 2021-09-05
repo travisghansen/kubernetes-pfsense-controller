@@ -198,7 +198,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
                     // move along
                     break;
                 default:
-                    $this->log("WARN ${sharedFrontendName} is not a supported type");
+                    $this->log("WARN haproxy frontend ${sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
                     continue 2;
             }
 
@@ -262,13 +262,13 @@ class HAProxyIngressProxy extends PfSenseAbstract
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         case "https":
-                            $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work and ssl offloading must be enabled");
+                            $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work");
                             $acl['value'] = "req_ssl_sni -i ${host}";
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         default:
                             // should never get here based on checks above, but just in case
-                            $this->log("WARN unsupported shared frontend type: ".$sharedFrontend['type']);
+                            $this->log("WARN haproxy frontend ${sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
                             continue 3;
                             break;
                     }

@@ -105,6 +105,12 @@ To achieve this goal, new 'shared' HAProxy frontends are created and attached to
 created frontend should also set an existing backend.  Note that existing frontend(s)/backend(s) can be created manually
 or using the `haproxy-declarative` plugin.
 
+When creating the parent frontend(s) please note that the selected type should be `http / https(offloading` to fully
+support the feature. If type `ssl / https(TCP mode)` is selected (`SSL Offloading` may be selected or not in the
+`External address` table) `sni` is used for routing logic and **CANNOT** support path-based logic which implies a 1:1
+mapping between `host` entries and backing `service`s. Type `tcp` will not work and any `Ingress` resources that would
+be bound to a frontend of this type are ignored.
+
 Combined with `haproxy-declarative` you can create a dynamic backend service (ie: your ingress controller) and
 subsequently dynamic frontend services based off of cluster ingresses.  This is generally helpful when you cannot or do
 not for whatever reason create wildcard frontend(s) to handle incoming traffic in HAProxy on pfSense.
