@@ -266,9 +266,9 @@ class HAProxyIngressProxy extends PfSenseAbstract
                             if (substr($host, 0, 2) == "*.") {
                                 // hdr(host) -m reg -i ^[^\.]+\.example\.org$
                                 // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
-                                $hostACL = "hdr(host) -m reg -i ^[^\.]+".str_replace(".", "\.", substr($host, 1))."(:[0-9]+)?$";
+                                $hostACL = "hdr(host) -m reg -i ^[^\.]+".str_replace([".", "-"], ["\.", "\-"], substr($host, 1))."(:[0-9]+)?$";
                             } else {
-                                $hostACL = "hdr(host) -m reg -i ^".str_replace(".", "\.", $host)."(:[0-9]+)?$";
+                                $hostACL = "hdr(host) -m reg -i ^".str_replace([".", "-"], ["\.", "\-"], $host)."(:[0-9]+)?$";
                             }
 
                             // https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types
@@ -319,7 +319,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
                                 // hdr(host) -m reg -i ^[^\.]+\.example\.org$
                                 // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
                                 // sni should never have the port on the end as the host header may have
-                                $hostACL = "req_ssl_sni -m reg -i ^[^\.]+".str_replace(".", "\.", substr($host, 1));
+                                $hostACL = "req_ssl_sni -m reg -i ^[^\.]+".str_replace([".", "-"], ["\.", "\-"], substr($host, 1));
                             } else {
                                 $hostACL = "req_ssl_sni -m str -i ${host}"; // exact match case-insensitive
                             }

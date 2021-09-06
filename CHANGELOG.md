@@ -1,3 +1,9 @@
+# v0.5.8
+
+Released 2021-09-05
+
+- properly escape regex values in `haproxy-ingress-proxy`
+
 # v0.5.7
 
 Released 2021-09-05
