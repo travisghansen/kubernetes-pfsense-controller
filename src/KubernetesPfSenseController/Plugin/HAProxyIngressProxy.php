@@ -231,6 +231,8 @@ class HAProxyIngressProxy extends PfSenseAbstract
             foreach ($item['spec']['rules'] as $ruleKey => $rule) {
                 $aclName = $frontend['name'].'-rule-'.$ruleKey;
                 $host = $rule['host'];
+                //$host = "*.${host}"; // for testing purposes only
+                //$host = ""; // for testing purposes only
                 if (!$this->shouldCreateRule($rule)) {
                     continue;
                 }
@@ -258,12 +260,76 @@ class HAProxyIngressProxy extends PfSenseAbstract
                     // ssl_fc_sni (this can be used only with type http)
                     switch ($sharedFrontend['type']) {
                         case "http":
-                            $acl['value'] = "hdr(host) -i ${host} path_beg -i ${path}";
+                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
+                            // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
+                            $hostACL = "";
+                            if (substr($host, 0, 2) == "*.") {
+                                // hdr(host) -m reg -i ^[^\.]+\.example\.org$
+                                // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
+                                $hostACL = "hdr(host) -m reg -i ^[^\.]+".str_replace(".", "\.", substr($host, 1))."(:[0-9]+)?$";
+                            } else {
+                                $hostACL = "hdr(host) -m reg -i ^".str_replace(".", "\.", $host)."(:[0-9]+)?$";
+                            }
+
+                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types
+                            // https://www.haproxy.com/documentation/hapee/latest/configuration/acls/syntax/
+                            $pathType = $path['pathType'] ?? null;
+                            $pathACL = "";
+                            switch($pathType) {
+                                case "Exact":
+                                    /**
+                                     * Matches the URL path exactly and with case sensitivity.
+                                     */
+                                    $pathACL = "path -m str ${path}";
+                                    break;
+                                case "Prefix":
+                                    /**
+                                     * Matches based on a URL path prefix split by /.
+                                     * Matching is case sensitive and done on a path element by element basis.
+                                     * A path element refers to the list of labels in the path split by the / separator.
+                                     * A request is a match for path p if every p is an element-wise prefix of p of the request path.
+                                     */
+                                    $pathACL = "path -m beg ${path}";
+                                    break;
+                                case "ImplementationSpecific":
+                                    /**
+                                     * With this path type, matching is up to the IngressClass.
+                                     * Implementations can treat this as a separate pathType or treat it identically to Prefix or Exact path types.
+                                     */
+                                    $pathACL = "path -m beg ${path}";
+                                    break;
+                                default:
+                                    $pathACL = "path -m beg ${path}";
+                                    break;
+                            }
+
+                            if (empty($host)) {
+                                $hostACL = "";
+                            }
+                            $acl['value'] = trim("${hostACL} ${pathACL}");
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         case "https":
                             $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work");
-                            $acl['value'] = "req_ssl_sni -i ${host}";
+
+                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
+                            // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
+                            $hostACL = "";
+                            if (substr($host, 0, 2) == "*.") {
+                                // hdr(host) -m reg -i ^[^\.]+\.example\.org$
+                                // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
+                                // sni should never have the port on the end as the host header may have
+                                $hostACL = "req_ssl_sni -m reg -i ^[^\.]+".str_replace(".", "\.", substr($host, 1));
+                            } else {
+                                $hostACL = "req_ssl_sni -m str -i ${host}"; // exact match case-insensitive
+                            }
+
+                            if (empty($host)) {
+                                $hostACL = "";
+                                $this->log("WARN cannot create rule for ${frontendName} because host is required for parent frontends of type: ".$sharedFrontend['type']);
+                                continue 3;
+                            }
+                            $acl['value'] = trim("${hostACL}");
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         default:

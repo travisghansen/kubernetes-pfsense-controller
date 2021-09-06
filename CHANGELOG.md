@@ -1,3 +1,12 @@
+# v0.5.7
+
+Released 2021-09-05
+
+- support wildcard hosts in `haproxy-ingress-proxy`
+- support empty hosts in `haproxy-ingress-proxy`
+- more stringent acls in `haproxy-ingress-proxy` to follow spec more closely
+- support `pathType` in `haproxy-ingress-proxy`
+
 # v0.5.6
 
 Released 2021-09-04
