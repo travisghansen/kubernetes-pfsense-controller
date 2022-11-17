@@ -111,11 +111,11 @@ data:
         definition:
           name: some-frontend-name
           type: http
-          forwardfor: yes
+          forwardfor: "yes"
           status: active
           backend_serverpool: some-backend-name
           a_extaddr:
             item:
               - extaddr: wan_ipv4
                 extaddr_port: 443
-                extaddr_ssl: yes
+                extaddr_ssl: "yes"
