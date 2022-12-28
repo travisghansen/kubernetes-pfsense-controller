@@ -230,7 +230,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
 
             foreach ($item['spec']['rules'] as $ruleKey => $rule) {
                 $aclName = $frontend['name'].'-rule-'.$ruleKey;
-                $host = $rule['host'];
+                $host = $rule['host'] ?? '';
                 //$host = "*.${host}"; // for testing purposes only
                 //$host = ""; // for testing purposes only
                 if (!$this->shouldCreateRule($rule)) {
@@ -425,7 +425,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
      */
     private function shouldCreateRule($rule)
     {
-        $hostName = $rule['host'];
+        $hostName = $rule['host'] ?? '';
         $pluginConfig = $this->getConfig();
         if (!empty($pluginConfig['allowedHostRegex'])) {
             $allowed = @preg_match($pluginConfig['allowedHostRegex'], $hostName);
