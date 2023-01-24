@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a2ef7e24770b1d3b8d85d6c7ef1ae03b",
+    "content-hash": "6a6812bbcb117ba28ca6d27685476dc2",
     "packages": [
         {
             "name": "composer/semver",
@@ -1315,16 +1315,16 @@
         },
         {
             "name": "travisghansen/kubernetes-client-php",
-            "version": "v0.3.5",
+            "version": "v0.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-client-php.git",
-                "reference": "73edc1d3b16663c49d528fdab308726bf76f111f"
+                "reference": "463ca2156420505911b4fd200791d2910cec0a62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/73edc1d3b16663c49d528fdab308726bf76f111f",
-                "reference": "73edc1d3b16663c49d528fdab308726bf76f111f",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-client-php/zipball/463ca2156420505911b4fd200791d2910cec0a62",
+                "reference": "463ca2156420505911b4fd200791d2910cec0a62",
                 "shasum": ""
             },
             "require": {
@@ -1364,22 +1364,22 @@
             ],
             "support": {
                 "issues": "https://github.com/travisghansen/kubernetes-client-php/issues",
-                "source": "https://github.com/travisghansen/kubernetes-client-php/tree/v0.3.5"
+                "source": "https://github.com/travisghansen/kubernetes-client-php/tree/v0.3.6"
             },
-            "time": "2021-08-05T14:50:47+00:00"
+            "time": "2023-01-24T20:32:03+00:00"
         },
         {
             "name": "travisghansen/kubernetes-controller-php",
-            "version": "v0.1.7",
+            "version": "v0.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/travisghansen/kubernetes-controller-php.git",
-                "reference": "4f8f6df454be096a6c04ff1ff8501660c8a1d79d"
+                "reference": "92a8cbb29239ad97064c8b8e4a28d0e0b1149a13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/4f8f6df454be096a6c04ff1ff8501660c8a1d79d",
-                "reference": "4f8f6df454be096a6c04ff1ff8501660c8a1d79d",
+                "url": "https://api.github.com/repos/travisghansen/kubernetes-controller-php/zipball/92a8cbb29239ad97064c8b8e4a28d0e0b1149a13",
+                "reference": "92a8cbb29239ad97064c8b8e4a28d0e0b1149a13",
                 "shasum": ""
             },
             "require": {
@@ -1415,9 +1415,9 @@
             ],
             "support": {
                 "issues": "https://github.com/travisghansen/kubernetes-controller-php/issues",
-                "source": "https://github.com/travisghansen/kubernetes-controller-php/tree/v0.1.7"
+                "source": "https://github.com/travisghansen/kubernetes-controller-php/tree/v0.1.8"
             },
-            "time": "2021-08-01T20:03:34+00:00"
+            "time": "2023-01-24T20:39:21+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -1507,7 +1507,8 @@
         "ext-yaml": "*",
         "ext-pcntl": "*",
         "ext-json": "*",
-        "ext-bz2": "*"
+        "ext-bz2": "*",
+        "ext-bcmath": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

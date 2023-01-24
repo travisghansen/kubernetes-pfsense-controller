@@ -164,7 +164,7 @@ class PfSenseConfigBlock
 
             $response = $this->client->call($method, $params);
             if ($response !== true) {
-                throw new \Exception("failed xmlrpc ${method} call");
+                throw new \Exception("failed xmlrpc {$method} call");
             }
         } catch (\Exception $e) {
             throw $e;

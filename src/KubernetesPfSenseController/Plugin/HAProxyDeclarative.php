@@ -192,7 +192,7 @@ class HAProxyDeclarative extends PfSenseAbstract
                 $serviceName = $resource['serviceName'];
                 $servicePort = $resource['servicePort'];
 
-                $service = $controller->getKubernetesClient()->request("/api/v1/namespaces/${serviceNamespace}/services/${serviceName}");
+                $service = $controller->getKubernetesClient()->request("/api/v1/namespaces/{$serviceNamespace}/services/{$serviceName}");
 
                 $hosts = [];
                 // if service does not exist this is NULL

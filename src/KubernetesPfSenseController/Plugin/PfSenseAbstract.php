@@ -22,7 +22,7 @@ abstract class PfSenseAbstract extends \KubernetesController\Plugin\AbstractPlug
             $config->save();
         } catch (\Exception $e) {
             $sectionName = $config->getSectionName();
-            $this->log("failed saving ${sectionName} config: ".$e->getMessage().' ('.$e->getCode().')');
+            $this->log("failed saving {$sectionName} config: ".$e->getMessage().' ('.$e->getCode().')');
             throw $e;
         }
     }

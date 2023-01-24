@@ -32,7 +32,7 @@ class MetalLB extends PfSenseAbstract
         $configMapName = explode("/", $configMap)[1];
 
         // metallb config
-        $watch = $controller->getKubernetesClient()->createWatch("/api/v1/watch/namespaces/${configMapNamespace}/configmaps/${configMapName}", [], $this->getMetalLbConfigWatchCallback());
+        $watch = $controller->getKubernetesClient()->createWatch("/api/v1/watch/namespaces/{$configMapNamespace}/configmaps/{$configMapName}", [], $this->getMetalLbConfigWatchCallback());
         $this->addWatch($watch);
 
         // initial load of nodes

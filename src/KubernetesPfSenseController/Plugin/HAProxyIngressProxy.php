@@ -198,14 +198,14 @@ class HAProxyIngressProxy extends PfSenseAbstract
                     // move along
                     break;
                 default:
-                    $this->log("WARN haproxy frontend ${sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
+                    $this->log("WARN haproxy frontend {$sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
                     continue 2;
             }
 
             if (!$haProxyConfig->frontendExists($sharedFrontendName)) {
                 if (!in_array($sharedFrontendName, $frontendWarning)) {
                     //$frontendWarning[] = $sharedFrontendName;
-                    $this->log("Frontend ${sharedFrontendName} must exist: ${frontendName}");
+                    $this->log("Frontend {$sharedFrontendName} must exist: {$frontendName}");
                 }
                 continue;
             }
@@ -213,7 +213,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
             if (!$haProxyConfig->backendExists($backendName)) {
                 if (!in_array($backendName, $backendWarning)) {
                     //$backendWarning[] = $backendName;
-                    $this->log("Backend ${backendName} must exist: $frontendName");
+                    $this->log("Backend {$backendName} must exist: {$frontendName}");
                 }
                 continue;
             }
@@ -231,7 +231,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
             foreach ($item['spec']['rules'] as $ruleKey => $rule) {
                 $aclName = $frontend['name'].'-rule-'.$ruleKey;
                 $host = $rule['host'] ?? '';
-                //$host = "*.${host}"; // for testing purposes only
+                //$host = "*.{$host}"; // for testing purposes only
                 //$host = ""; // for testing purposes only
                 if (!$this->shouldCreateRule($rule)) {
                     continue;
@@ -280,7 +280,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
                                     /**
                                      * Matches the URL path exactly and with case sensitivity.
                                      */
-                                    $pathACL = "path -m str ${path}";
+                                    $pathACL = "path -m str {$path}";
                                     break;
                                 case "Prefix":
                                     /**
@@ -289,24 +289,24 @@ class HAProxyIngressProxy extends PfSenseAbstract
                                      * A path element refers to the list of labels in the path split by the / separator.
                                      * A request is a match for path p if every p is an element-wise prefix of p of the request path.
                                      */
-                                    $pathACL = "path -m beg ${path}";
+                                    $pathACL = "path -m beg {$path}";
                                     break;
                                 case "ImplementationSpecific":
                                     /**
                                      * With this path type, matching is up to the IngressClass.
                                      * Implementations can treat this as a separate pathType or treat it identically to Prefix or Exact path types.
                                      */
-                                    $pathACL = "path -m beg ${path}";
+                                    $pathACL = "path -m beg {$path}";
                                     break;
                                 default:
-                                    $pathACL = "path -m beg ${path}";
+                                    $pathACL = "path -m beg {$path}";
                                     break;
                             }
 
                             if (empty($host)) {
                                 $hostACL = "";
                             }
-                            $acl['value'] = trim("${hostACL} ${pathACL}");
+                            $acl['value'] = trim("{$hostACL} {$pathACL}");
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         case "https":
@@ -321,20 +321,20 @@ class HAProxyIngressProxy extends PfSenseAbstract
                                 // sni should never have the port on the end as the host header may have
                                 $hostACL = "req_ssl_sni -m reg -i ^[^\.]+".str_replace([".", "-"], ["\.", "\-"], substr($host, 1));
                             } else {
-                                $hostACL = "req_ssl_sni -m str -i ${host}"; // exact match case-insensitive
+                                $hostACL = "req_ssl_sni -m str -i {$host}"; // exact match case-insensitive
                             }
 
                             if (empty($host)) {
                                 $hostACL = "";
-                                $this->log("WARN cannot create rule for ${frontendName} because host is required for parent frontends of type: ".$sharedFrontend['type']);
+                                $this->log("WARN cannot create rule for {$frontendName} because host is required for parent frontends of type: ".$sharedFrontend['type']);
                                 continue 3;
                             }
-                            $acl['value'] = trim("${hostACL}");
+                            $acl['value'] = trim("{$hostACL}");
                             $frontend['ha_acls']['item'][] = $acl;
                             break;
                         default:
                             // should never get here based on checks above, but just in case
-                            $this->log("WARN haproxy frontend ${sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
+                            $this->log("WARN haproxy frontend {$sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
                             continue 3;
                             break;
                     }
@@ -398,7 +398,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
         // actually remove them from config
         $toDeleteFrontends = array_diff($managedFrontendNames, $managedFrontendNamesPreSave);
         foreach ($toDeleteFrontends as $frontendName) {
-            $this->log("removing frontend no longer needed: ${frontendName}");
+            $this->log("removing frontend no longer needed: {$frontendName}");
             $haProxyConfig->removeFrontend($frontendName);
         }
 

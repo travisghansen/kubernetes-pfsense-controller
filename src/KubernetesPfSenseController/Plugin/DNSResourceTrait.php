@@ -36,7 +36,7 @@ trait DNSResourceTrait
         $managedHostsPreSave = [];
         foreach ($resourceHosts as $hostName => $struct) {
             $ip = $struct['ip'];
-            $this->log("setting hostname entry: Host - ${hostName}, IP - ${ip}");
+            $this->log("setting hostname entry: Host - {$hostName}, IP - {$ip}");
             $managedHostsPreSave[$hostName] = [
                 'resource' => $this->getKubernetesResourceDetails($struct['resource']),
             ];
@@ -61,7 +61,7 @@ trait DNSResourceTrait
             // actually remove them from config
             $toDeleteHosts = array_diff(@array_keys($managedHosts), @array_keys($managedHostsPreSave));
             foreach ($toDeleteHosts as $hostName) {
-                $this->log("deleting hostname entry for host: ${hostName}");
+                $this->log("deleting hostname entry for host: {$hostName}");
             }
 
             $dnsmasqConfig = null;

@@ -1,3 +1,9 @@
+# v0.5.11
+
+Released 2023-01-24
+
+- cleanup deprecation notices
+
 # v0.5.10
 
 Released 2023-01-24

@@ -57,7 +57,7 @@ trait CommonTrait
                         $oldNodeIp = KubernetesUtils::getNodeIp($oldNode);
 
                         if ($oldNodeIp != $nodeIp) {
-                            $this->log("NodeIP Address Changed - NewIp: ${nodeIp}, OldIP: ${oldNodeIp}");
+                            $this->log("NodeIP Address Changed - NewIp: {$nodeIp}, OldIP: {$oldNodeIp}");
                             if ($trigger) {
                                 $this->delayedAction();
                             }
