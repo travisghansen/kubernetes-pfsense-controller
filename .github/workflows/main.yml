@@ -34,7 +34,8 @@ jobs:
       - name: build prep
         id: build_prep
         run: |
-          git config --global --add safe.directory ${PWD}
+          #git config --global --add safe.directory ${PWD}
+          git config --global --add safe.directory /app
 
       - name: application build
         uses: php-actions/composer@v6
