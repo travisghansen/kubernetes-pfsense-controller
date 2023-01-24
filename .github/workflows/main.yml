@@ -31,11 +31,16 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      - name: build prep
+        id: build_prep
+        run: |
+          git config --global --add safe.directory ${PWD}
+
       - name: application build
         uses: php-actions/composer@v6
         with:
           php_version: "8.2"
-          php_extensions: pcntl bz2
+          php_extensions: pcntl bz2 bcmath
           command: buildphar
 
       - name: create release
