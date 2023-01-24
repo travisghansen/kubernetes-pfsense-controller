@@ -32,7 +32,8 @@
             "@downloadpharbuilder",
             "@php -d phar.readonly=0 phar-builder.phar --name=kubernetes-pfsense-controller-${APP_VERSION:-$(git describe --exact-match --tags 2>/dev/null || git symbolic-ref --short -q HEAD)}.phar package composer.json",
             "cp releases/kubernetes-pfsense-controller-${APP_VERSION:-$(git describe --exact-match --tags 2>/dev/null || git symbolic-ref --short -q HEAD)}.phar releases/docker.phar",
-            "chmod +x releases/*.phar"
+            "chmod +x releases/*.phar",
+            "ls -l releases/*.phar"
         ],
         "removevendor": [
             "rm -rf vendor"
