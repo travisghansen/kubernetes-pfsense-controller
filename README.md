@@ -1,5 +1,5 @@
 ![Image](https://img.shields.io/docker/pulls/travisghansen/kubernetes-pfsense-controller.svg)
-![Image](https://img.shields.io/github/workflow/status/travisghansen/kubernetes-pfsense-controller/CI?style=flat-square)
+![Image](https://img.shields.io/github/actions/workflow/status/travisghansen/kubernetes-pfsense-controller/main.yml?branch=master&style=flat-square)
 
 # Intro
 [kubernetes-pfsense-controller (kpc)](https://github.com/travisghansen/kubernetes-pfsense-controller) works hard to keep

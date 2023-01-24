@@ -1,3 +1,11 @@
+# v0.5.9
+
+Released 2023-01-24
+
+- update base container to `php:8.2-cli-alpine`
+- new env vars to support self-signed ca certs
+- bump composer deps
+
 # v0.5.8
 
 Released 2021-09-05

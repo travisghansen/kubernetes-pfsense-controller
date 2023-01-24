@@ -37,8 +37,28 @@ $kubernetesClient = new KubernetesClient\Client($config);
 // pfSense client
 $pfSenseClient = new \KubernetesPfSenseController\XmlRpc\Client(getenv('PFSENSE_URL').'/xmlrpc.php');
 $pfSenseClient->getHttpClient()->setAuth($pfSenseUsername, getenv('PFSENSE_PASSWORD'));
+$httpOptions = [];
 if ($pfSenseInsecure) {
-    $pfSenseClient->getHttpClient()->setOptions(['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
+    $httpOptions = array_merge($httpOptions, ['sslverifypeer' => false, 'sslallowselfsigned' => true, 'sslverifypeername' => false]);
+}
+
+if (getenv('PFSENSE_SSLCAPATH')) {
+    $httpOptions = array_merge($httpOptions, ['sslcapath' => getenv('PFSENSE_SSLCAPATH')]);
+}
+
+if (getenv('PFSENSE_SSLCAFILE')) {
+    $httpOptions = array_merge($httpOptions, ['sslcafile' => getenv('PFSENSE_SSLCAFILE')]);
+}
+
+if (getenv('PFSENSE_HTTPKEEPALIVE')) {
+    $httpOptions = array_merge($httpOptions, ['keepalive' => true]);
+}
+
+// https://docs.laminas.dev/laminas-http/client/intro/#configuration
+// https://docs.laminas.dev/laminas-http/client/adapters/
+if (count($httpOptions) > 0) {
+    echo 'setting http client options: ' . json_encode($httpOptions)."\n";
+    $pfSenseClient->getHttpClient()->setOptions($httpOptions);
 }
 
 // setup controller

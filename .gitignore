@@ -1,5 +1,7 @@
 .env
 
+/.php-cs-fixer.cache
+
 # eclipse
 /.project
 /.settings
