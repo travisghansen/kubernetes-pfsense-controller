@@ -3,8 +3,10 @@
 Released 2023-01-24
 
 - update base container to `php:8.2-cli-alpine`
+- build additional platforms for container images
 - new env vars to support self-signed ca certs
 - bump composer deps
+- CI updates
 
 # v0.5.8
 
