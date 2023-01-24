@@ -16,6 +16,7 @@
         "ext-pcntl": "*",
         "ext-json": "*",
         "ext-bz2": "*",
+        "ext-bcmath": "*",
         "travisghansen/kubernetes-controller-php": "0.1.*",
         "travisghansen/kubernetes-client-php": "0.3.*",
         "vlucas/phpdotenv": "^2.5",

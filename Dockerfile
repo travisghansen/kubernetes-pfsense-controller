@@ -7,7 +7,7 @@ RUN echo "I am running build on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 RUN \
     apk add --no-cache bzip2-dev \
-    && docker-php-ext-install bz2 pcntl \
+    && docker-php-ext-install bz2 pcntl bcmath \
     && apk add --no-cache yaml-dev \
     && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \
     && pecl install yaml \
