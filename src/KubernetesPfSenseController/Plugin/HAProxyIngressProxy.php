@@ -35,6 +35,11 @@ class HAProxyIngressProxy extends PfSenseAbstract
     public const FRONTEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/frontend';
 
     /**
+     * Annotation to specific shared frontend template data
+     */
+    public const FRONTEND_DEFINITION_TEMPLATE_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/frontendDefinitionTemplate';
+
+    /**
      * Annotation to override default backend
      */
     public const BACKEND_ANNOTATION_NAME = 'haproxy-ingress-proxy.pfsense.org/backend';
@@ -137,7 +142,7 @@ class HAProxyIngressProxy extends PfSenseAbstract
         foreach ($this->state['ingresses'] as $item) {
             $ingressNamespace = $item['metadata']['namespace'];
             $ingressName = $item['metadata']['name'];
-            $frontendName = $this->getController()->getControllerId().'-'.$ingressNamespace.'-'.$ingressName;
+            $frontendNameBase = $ingressNamespace . '-' . $ingressName . '-' . $this->getController()->getControllerId();
 
             if (KubernetesUtils::getResourceAnnotationExists($item, self::ENABLED_ANNOTATION_NAME)) {
                 $ingressProxyEnabledAnnotationValue = KubernetesUtils::getResourceAnnotationValue($item, self::ENABLED_ANNOTATION_NAME);
@@ -156,15 +161,25 @@ class HAProxyIngressProxy extends PfSenseAbstract
                 }
             }
 
+            $frontendTemplate = [];
+            if (KubernetesUtils::getResourceAnnotationExists($item, self::FRONTEND_DEFINITION_TEMPLATE_ANNOTATION_NAME)) {
+                $frontendTemplateData = KubernetesUtils::getResourceAnnotationValue($item, self::FRONTEND_DEFINITION_TEMPLATE_ANNOTATION_NAME);
+                if (!empty($frontendTemplateData)) {
+                    $frontendTemplate = json_decode($frontendTemplateData, true);
+                }
+            }
+
             if (!$ingressProxyEnabled) {
                 continue;
             }
 
             if (KubernetesUtils::getResourceAnnotationExists($item, self::FRONTEND_ANNOTATION_NAME)) {
-                $sharedFrontendName = KubernetesUtils::getResourceAnnotationValue($item, self::FRONTEND_ANNOTATION_NAME);
+                $primaryFrontendNames = KubernetesUtils::getResourceAnnotationValue($item, self::FRONTEND_ANNOTATION_NAME);
             } else {
-                $sharedFrontendName = $pluginConfig['defaultFrontend'];
+                $primaryFrontendNames = $pluginConfig['defaultFrontend'];
             }
+
+            $primaryFrontendNames = array_map('trim', explode(",", $primaryFrontendNames));
 
             if (KubernetesUtils::getResourceAnnotationExists($item, self::BACKEND_ANNOTATION_NAME)) {
                 $backendName = KubernetesUtils::getResourceAnnotationValue($item, self::BACKEND_ANNOTATION_NAME);
@@ -172,191 +187,197 @@ class HAProxyIngressProxy extends PfSenseAbstract
                 $backendName = $pluginConfig['defaultBackend'];// use default or read annotation(s)
             }
 
-            if (empty($sharedFrontendName) || empty($backendName)) {
-                $this->log('missing frontend or backend configuration: '.$frontendName);
+            if (empty($primaryFrontendNames) || empty($backendName)) {
+                $this->log('missing frontend or backend configuration: ' . $frontendNameBase);
                 continue;
-            }
+            };
 
-            // get the type of the shared frontend
-            // NOTE the below do NOT correlate 100% with what is shown on the 'type' column of the 'frontends' tab.
-            // 'https' for example is actually http + ssl offloading checked
-            /*
-            <option value="http">http / https(offloading)</option>
-            <option value="https">ssl / https(TCP mode)</option>
-            <option value="tcp">tcp</option>
-            */
+            foreach ($primaryFrontendNames as $primaryFrontendName) {
+                $frontendName = "{$primaryFrontendName}-{$frontendNameBase}";
 
-            /**
-             * http - can do l7 rules such as headers, path, etc
-             * https - can only do sni rules
-             * tcp - cannot be used with this application
-             */
-            $sharedFrontend = $haProxyConfig->getFrontend($sharedFrontendName);
-            switch ($sharedFrontend['type']) {
-                case "http":
-                case "https":
-                    // move along
-                    break;
-                default:
-                    $this->log("WARN haproxy frontend {$sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
-                    continue 2;
-            }
-
-            if (!$haProxyConfig->frontendExists($sharedFrontendName)) {
-                if (!in_array($sharedFrontendName, $frontendWarning)) {
-                    //$frontendWarning[] = $sharedFrontendName;
-                    $this->log("Frontend {$sharedFrontendName} must exist: {$frontendName}");
-                }
-                continue;
-            }
-
-            if (!$haProxyConfig->backendExists($backendName)) {
-                if (!in_array($backendName, $backendWarning)) {
-                    //$backendWarning[] = $backendName;
-                    $this->log("Backend {$backendName} must exist: {$frontendName}");
-                }
-                continue;
-            }
-
-            // new frontend
-            $frontend = [];
-            $frontend['name'] = $frontendName;
-            $frontend['desc'] = 'created by kpc - do not edit';
-            $frontend['status'] = 'active';
-            $frontend['secondary'] = 'yes';
-            $frontend['primary_frontend'] = $sharedFrontendName;
-            $frontend['ha_acls'] = ['item' => []];
-            $frontend['a_actionitems'] = ['item' => []];
-
-            foreach ($item['spec']['rules'] as $ruleKey => $rule) {
-                $aclName = $frontend['name'].'-rule-'.$ruleKey;
-                $host = $rule['host'] ?? '';
-                //$host = "*.{$host}"; // for testing purposes only
-                //$host = ""; // for testing purposes only
-                if (!$this->shouldCreateRule($rule)) {
+                if (!$haProxyConfig->frontendExists($primaryFrontendName)) {
+                    if (!in_array($primaryFrontendName, $frontendWarning)) {
+                        //$frontendWarning[] = $primaryFrontendName;
+                        $this->log("Frontend {$primaryFrontendName} must exist: {$frontendName}");
+                    }
                     continue;
                 }
-                //TODO: add certificate to primary_frontend via acme?
 
-                //acls with same name are OR'd by haproxy
-                foreach ($rule['http']['paths'] as $pathKey => $path) {
-                    //$serviceNamespace = $ingressNamespace;
-                    //$serviceName = $path['backend']['serviceName'];
-                    //$servicePort = $path['backend']['servicePort'];
+                // get the type of the shared frontend
+                // NOTE the below do NOT correlate 100% with what is shown on the 'type' column of the 'frontends' tab.
+                // 'https' for example is actually http + ssl offloading checked
+                /*
+                <option value="http">http / https(offloading)</option>
+                <option value="https">ssl / https(TCP mode)</option>
+                <option value="tcp">tcp</option>
+                */
 
-                    $path = $path['path'] ?? "";
-                    if (empty($path)) {
-                        $path = '/';
-                    }
-
-                    // new acl
-                    $acl = [];
-                    $acl['name'] = $aclName;
-                    $acl['expression'] = 'custom';
-                    // alter this based on shared frontend type
-                    // if tcp/ssl then do sni-based rule
-                    // https://stackoverflow.com/questions/33085240/haproxy-sni-vs-http-host-acl-check-performance
-                    // req_ssl_sni (types https and tcp both equate to type tcp in the haproxy config), type tcp requires this variant
-                    // ssl_fc_sni (this can be used only with type http)
-                    switch ($sharedFrontend['type']) {
-                        case "http":
-                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
-                            // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
-                            $hostACL = "";
-                            if (substr($host, 0, 2) == "*.") {
-                                // hdr(host) -m reg -i ^[^\.]+\.example\.org$
-                                // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
-                                $hostACL = "hdr(host) -m reg -i ^[^\.]+".str_replace([".", "-"], ["\.", "\-"], substr($host, 1))."(:[0-9]+)?$";
-                            } else {
-                                $hostACL = "hdr(host) -m reg -i ^".str_replace([".", "-"], ["\.", "\-"], $host)."(:[0-9]+)?$";
-                            }
-
-                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types
-                            // https://www.haproxy.com/documentation/hapee/latest/configuration/acls/syntax/
-                            $pathType = $path['pathType'] ?? null;
-                            $pathACL = "";
-                            switch($pathType) {
-                                case "Exact":
-                                    /**
-                                     * Matches the URL path exactly and with case sensitivity.
-                                     */
-                                    $pathACL = "path -m str {$path}";
-                                    break;
-                                case "Prefix":
-                                    /**
-                                     * Matches based on a URL path prefix split by /.
-                                     * Matching is case sensitive and done on a path element by element basis.
-                                     * A path element refers to the list of labels in the path split by the / separator.
-                                     * A request is a match for path p if every p is an element-wise prefix of p of the request path.
-                                     */
-                                    $pathACL = "path -m beg {$path}";
-                                    break;
-                                case "ImplementationSpecific":
-                                    /**
-                                     * With this path type, matching is up to the IngressClass.
-                                     * Implementations can treat this as a separate pathType or treat it identically to Prefix or Exact path types.
-                                     */
-                                    $pathACL = "path -m beg {$path}";
-                                    break;
-                                default:
-                                    $pathACL = "path -m beg {$path}";
-                                    break;
-                            }
-
-                            if (empty($host)) {
-                                $hostACL = "";
-                            }
-                            $acl['value'] = trim("{$hostACL} {$pathACL}");
-                            $frontend['ha_acls']['item'][] = $acl;
-                            break;
-                        case "https":
-                            $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work");
-
-                            // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
-                            // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
-                            $hostACL = "";
-                            if (substr($host, 0, 2) == "*.") {
-                                // hdr(host) -m reg -i ^[^\.]+\.example\.org$
-                                // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
-                                // sni should never have the port on the end as the host header may have
-                                $hostACL = "req_ssl_sni -m reg -i ^[^\.]+".str_replace([".", "-"], ["\.", "\-"], substr($host, 1));
-                            } else {
-                                $hostACL = "req_ssl_sni -m str -i {$host}"; // exact match case-insensitive
-                            }
-
-                            if (empty($host)) {
-                                $hostACL = "";
-                                $this->log("WARN cannot create rule for {$frontendName} because host is required for parent frontends of type: ".$sharedFrontend['type']);
-                                continue 3;
-                            }
-                            $acl['value'] = trim("{$hostACL}");
-                            $frontend['ha_acls']['item'][] = $acl;
-                            break;
-                        default:
-                            // should never get here based on checks above, but just in case
-                            $this->log("WARN haproxy frontend {$sharedFrontendName} has unsupported type: ".$sharedFrontend['type']);
-                            continue 3;
-                            break;
-                    }
+                /**
+                 * http - can do l7 rules such as headers, path, etc
+                 * https - can only do sni rules
+                 * tcp - cannot be used with this application
+                 */
+                $primaryFrontend = $haProxyConfig->getFrontend($primaryFrontendName);
+                switch ($primaryFrontend['type']) {
+                    case "http":
+                    case "https":
+                        // move along
+                        break;
+                    default:
+                        $this->log("WARN haproxy frontend {$primaryFrontendName} has unsupported type: " . $primaryFrontend['type']);
+                        continue 2;
                 }
 
-                // new action (tied to acl)
-                $action = [];
-                $action['action'] = 'use_backend';
-                $action['use_backendbackend'] = $backendName;
-                $action['acl'] = $acl['name'];
+                if (!$haProxyConfig->backendExists($backendName)) {
+                    if (!in_array($backendName, $backendWarning)) {
+                        //$backendWarning[] = $backendName;
+                        $this->log("Backend {$backendName} must exist: {$frontendName}");
+                    }
+                    continue;
+                }
 
-                // add action
-                $frontend['a_actionitems']['item'][] = $action;
-            }
+                // new frontend
+                $frontend = $frontendTemplate;
+                $frontend['name'] = $frontendName;
+                $frontend['desc'] = 'created by kpc - do not edit';
+                $frontend['status'] = 'active';
+                $frontend['secondary'] = 'yes';
+                $frontend['primary_frontend'] = $primaryFrontendName;
+                $frontend['ha_acls'] = ['item' => []];
+                $frontend['a_actionitems'] = ['item' => []];
 
-            // only create frontend if we have any actions
-            if (count($frontend['a_actionitems']['item']) > 0) {
-                // add new frontend to list of resources
-                $frontend['_resource'] = $item;
-                $resources['frontend'][] = $frontend;
-            } else {
-                //$this->log('no rules for frontend '. $frontend['name'].' ignoring');
+                foreach ($item['spec']['rules'] as $ruleKey => $rule) {
+                    $aclName = $frontend['name'] . '-rule-' . $ruleKey;
+                    $host = $rule['host'] ?? '';
+                    //$host = "*.{$host}"; // for testing purposes only
+                    //$host = ""; // for testing purposes only
+                    if (!$this->shouldCreateRule($rule)) {
+                        continue;
+                    }
+                    //TODO: add certificate to primary_frontend via acme?
+
+                    //acls with same name are OR'd by haproxy
+                    foreach ($rule['http']['paths'] as $pathKey => $path) {
+                        //$serviceNamespace = $ingressNamespace;
+                        //$serviceName = $path['backend']['serviceName'];
+                        //$servicePort = $path['backend']['servicePort'];
+
+                        $path = $path['path'] ?? "";
+                        if (empty($path)) {
+                            $path = '/';
+                        }
+
+                        // new acl
+                        $acl = [];
+                        $acl['name'] = $aclName;
+                        $acl['expression'] = 'custom';
+                        // alter this based on shared frontend type
+                        // if tcp/ssl then do sni-based rule
+                        // https://stackoverflow.com/questions/33085240/haproxy-sni-vs-http-host-acl-check-performance
+                        // req_ssl_sni (types https and tcp both equate to type tcp in the haproxy config), type tcp requires this variant
+                        // ssl_fc_sni (this can be used only with type http)
+                        switch ($primaryFrontend['type']) {
+                            case "http":
+                                // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
+                                // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
+                                $hostACL = "";
+                                if (substr($host, 0, 2) == "*.") {
+                                    // hdr(host) -m reg -i ^[^\.]+\.example\.org$
+                                    // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
+                                    $hostACL = "hdr(host) -m reg -i ^[^\.]+" . str_replace([".", "-"], ["\.", "\-"], substr($host, 1)) . "(:[0-9]+)?$";
+                                } else {
+                                    $hostACL = "hdr(host) -m reg -i ^" . str_replace([".", "-"], ["\.", "\-"], $host) . "(:[0-9]+)?$";
+                                }
+
+                                // https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types
+                                // https://www.haproxy.com/documentation/hapee/latest/configuration/acls/syntax/
+                                $pathType = $path['pathType'] ?? null;
+                                $pathACL = "";
+                                switch ($pathType) {
+                                    case "Exact":
+                                        /**
+                                         * Matches the URL path exactly and with case sensitivity.
+                                         */
+                                        $pathACL = "path -m str {$path}";
+                                        break;
+                                    case "Prefix":
+                                        /**
+                                         * Matches based on a URL path prefix split by /.
+                                         * Matching is case sensitive and done on a path element by element basis.
+                                         * A path element refers to the list of labels in the path split by the / separator.
+                                         * A request is a match for path p if every p is an element-wise prefix of p of the request path.
+                                         */
+                                        $pathACL = "path -m beg {$path}";
+                                        break;
+                                    case "ImplementationSpecific":
+                                        /**
+                                         * With this path type, matching is up to the IngressClass.
+                                         * Implementations can treat this as a separate pathType or treat it identically to Prefix or Exact path types.
+                                         */
+                                        $pathACL = "path -m beg {$path}";
+                                        break;
+                                    default:
+                                        $pathACL = "path -m beg {$path}";
+                                        break;
+                                }
+
+                                if (empty($host)) {
+                                    $hostACL = "";
+                                }
+                                $acl['value'] = trim("{$hostACL} {$pathACL}");
+                                $frontend['ha_acls']['item'][] = $acl;
+                                break;
+                            case "https":
+                                $this->log("WARN unexpected behavior may occur when using a shared frontend of type https, path-based routing will not work");
+
+                                // https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
+                                // https://serverfault.com/questions/388937/how-do-i-match-a-wildcard-host-in-acl-lists-in-haproxy
+                                $hostACL = "";
+                                if (substr($host, 0, 2) == "*.") {
+                                    // hdr(host) -m reg -i ^[^\.]+\.example\.org$
+                                    // hdr(host) -m reg -i ^[^\.]+\.example\.org(:[0-9]+)?$
+                                    // sni should never have the port on the end as the host header may have
+                                    $hostACL = "req_ssl_sni -m reg -i ^[^\.]+" . str_replace([".", "-"], ["\.", "\-"], substr($host, 1));
+                                } else {
+                                    $hostACL = "req_ssl_sni -m str -i {$host}"; // exact match case-insensitive
+                                }
+
+                                if (empty($host)) {
+                                    $hostACL = "";
+                                    $this->log("WARN cannot create rule for {$frontendName} because host is required for primary frontends of type: " . $primaryFrontend['type']);
+                                    continue 3;
+                                }
+                                $acl['value'] = trim("{$hostACL}");
+                                $frontend['ha_acls']['item'][] = $acl;
+                                break;
+                            default:
+                                // should never get here based on checks above, but just in case
+                                $this->log("WARN haproxy frontend {$primaryFrontendName} has unsupported type: " . $primaryFrontend['type']);
+                                continue 3;
+                                break;
+                        }
+                    }
+
+                    // new action (tied to acl)
+                    $action = [];
+                    $action['action'] = 'use_backend';
+                    $action['use_backendbackend'] = $backendName;
+                    $action['acl'] = $acl['name'];
+
+                    // add action
+                    $frontend['a_actionitems']['item'][] = $action;
+                }
+
+                ksort($frontend);
+
+                // only create frontend if we have any actions
+                if (count($frontend['a_actionitems']['item']) > 0) {
+                    // add new frontend to list of resources
+                    $frontend['_resource'] = $item;
+                    $resources['frontend'][] = $frontend;
+                } else {
+                    //$this->log('no rules for frontend '. $frontend['name'].' ignoring');
+                }
             }
         }
 

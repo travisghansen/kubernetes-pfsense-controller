@@ -118,6 +118,10 @@ not for whatever reason create wildcard frontend(s) to handle incoming traffic i
 Optionally, on the ingress resources you can set the following annotations: `haproxy-ingress-proxy.pfsense.org/frontend`
 and `haproxy-ingress-proxy.pfsense.org/backend` to respectively set the frontend and backend to override the defaults.
 
+In advanced scenarios it is possible to provide a template definition of the shared frontend using the
+`haproxy-ingress-proxy.pfsense.org/frontendDefinitionTemplate` annotation (see
+https://github.com/travisghansen/kubernetes-pfsense-controller/issues/19#issuecomment-1416576678).
+
 ```yaml
       haproxy-ingress-proxy:
         enabled: true
@@ -127,6 +131,7 @@ and `haproxy-ingress-proxy.pfsense.org/backend` to respectively set the frontend
         # if defaultEnabled is empty or true, you can disable specific ingresses by setting the annotation to false
         # if defaultEnabled is false, you can enable specific ingresses by setting the annotation to true
         defaultEnabled: true
+        # can optionally be comma-separated list if you want the same ingress to be served by multiple frontends
         defaultFrontend: http-80
         defaultBackend: traefik
         #allowedHostRegex: "/.*/"

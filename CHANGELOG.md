@@ -1,3 +1,11 @@
+# v0.5.12
+
+Released 2023-02-04
+
+- allow multiple frontends with `haproxy-ingress-proxy` (see #17)
+- allow setting a template for shared frontends on a per-ingress basis (see #19)
+  - shared frontend names are now more unique so old names will be removed and new added
+
 # v0.5.11
 
 Released 2023-01-24
