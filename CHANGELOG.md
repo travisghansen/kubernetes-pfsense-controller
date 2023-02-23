@@ -1,3 +1,9 @@
+# v0.5.13
+
+Released 2023-02-23
+
+- remove metallb-isms allowing the `metallb` plugin to work with `kube-vip`, `metallb` with crds, etc
+
 # v0.5.12
 
 Released 2023-02-04

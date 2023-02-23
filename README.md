@@ -60,6 +60,9 @@ combination of Layer2 or BGP type configurations.  Layer2 requires no integratio
 leverage the BGP implementation you need a BGP server along with neighbor configuration.  `kpc` *dynamically* updates
 bgp neighbors for you in pfSense by continually monitoring cluster `Node`s.
 
+While this plugin is *named* `metallb` it does not **require** MetalLB to be installed or in use. It can be used with
+`kube-vip` or any other service that requires BGP peers/neighbors.
+
 The plugin assumes you've already installed openbgp or frr and configured it as well as created a `group` to use with
 MetalLB.
 
@@ -68,11 +71,14 @@ MetalLB.
         enabled: true
         nodeLabelSelector:
         nodeFieldSelector:
-        #configMap: "metallb-system/config"
         # pick 1 implementation
-        bgp-implementation: openbgp
-        # bgp-implementation: frr
+        # bgp-implementation: openbgp
+        bgp-implementation: frr
         options:
+          frr:
+            template:
+              peergroup: metallb
+
           openbgp:
             template:
               md5sigkey:
@@ -81,9 +87,6 @@ MetalLB.
               row:
                 - parameters: announce all
                   parmvalue:
-          frr:
-            template:
-              peergroup: metallb
 ```
 
 ## haproxy-declarative
