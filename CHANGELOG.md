@@ -1,3 +1,9 @@
+# v0.5.14
+
+Released 2023-04-15
+
+- more robust handling of the shared frontend templates
+
 # v0.5.13
 
 Released 2023-02-23

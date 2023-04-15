@@ -243,8 +243,22 @@ class HAProxyIngressProxy extends PfSenseAbstract
                 $frontend['status'] = 'active';
                 $frontend['secondary'] = 'yes';
                 $frontend['primary_frontend'] = $primaryFrontendName;
-                $frontend['ha_acls'] = ['item' => []];
-                $frontend['a_actionitems'] = ['item' => []];
+
+                // acls
+                if (!is_array($frontend['ha_acls'])) {
+                    $frontend['ha_acls'] = ['item' => []];
+                }
+                if (!is_array(($frontend['ha_acls']['item']))) {
+                    $frontend['ha_acls']['item'] = [];
+                }
+
+                // actions
+                if (!is_array($frontend['a_actionitems'])) {
+                    $frontend['a_actionitems'] = ['item' => []];
+                }
+                if (!is_array($frontend['a_actionitems']['item'])) {
+                    $frontend['a_actionitems']['item'] = [];
+                }
 
                 foreach ($item['spec']['rules'] as $ruleKey => $rule) {
                     $aclName = $frontend['name'] . '-rule-' . $ruleKey;
