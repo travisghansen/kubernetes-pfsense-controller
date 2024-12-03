@@ -126,17 +126,19 @@ class DNSIngresses extends PfSenseAbstract
             return;
         }
 
-        $ip = KubernetesUtils::getIngressIp($ingress);
-        if (empty($ip)) {
+        $ips = KubernetesUtils::getIngressIp($ingress);
+        if (empty($ips)) {
             return;
         }
         foreach ($ingress['spec']['rules'] as $rule) {
             if ($this->shouldCreateHost($rule['host'])) {
                 $resourceHosts[$rule['host']] = [
-                    'ip' => $ip,
+                    'ip' => implode(',', $ips),
                     'resource' => $ingress,
                 ];
-            }
+            } else {
+var_dump("what");
+}
         }
     }
 

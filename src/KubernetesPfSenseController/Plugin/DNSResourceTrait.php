@@ -69,10 +69,14 @@ trait DNSResourceTrait
 
             if ($dnsmasqEnabled) {
                 $dnsmasqConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'dnsmasq');
+                if (!isset($dnsmasqConfig->data) || !is_array($dnsmasqConfig->data)) {
+                    $dnsmasqConfig->data = [];
+                }
                 if (!isset($dnsmasqConfig->data['hosts']) || !is_array($dnsmasqConfig->data['hosts'])) {
                     $dnsmasqConfig->data['hosts'] = [];
                 }
                 foreach ($hosts as $host) {
+		    $host['ip'] = explode(',', $host['ip'], 2)[0];
                     Utils::putListItemMultiKey($dnsmasqConfig->data['hosts'], $host, ['host', 'domain']);
                 }
 
@@ -87,6 +91,9 @@ trait DNSResourceTrait
 
             if ($unboundEnabled) {
                 $unboundConfig = PfSenseConfigBlock::getRootConfigBlock($this->getController()->getRegistryItem('pfSenseClient'), 'unbound');
+                if (!isset($unboundConfig->data) || !is_array($unboundConfig->data)) {
+                    $unboundConfig->data = [];
+                }
                 if (!isset($unboundConfig->data['hosts']) || !is_array($unboundConfig->data['hosts'])) {
                     $unboundConfig->data['hosts'] = [];
                 }

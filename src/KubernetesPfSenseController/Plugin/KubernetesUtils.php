@@ -197,14 +197,19 @@ class KubernetesUtils
     }
 
     /**
-     * Get IP address of an ingress resource
+     * Get list of IP addresses of an ingress resource as comma-separated string
      *
      * @param $ingress
      * @return mixed
      */
     public static function getIngressIp($ingress)
     {
-        return $ingress['status']['loadBalancer']['ingress'][0]['ip'];
+        return array_map(
+            function ($lbIngress) {
+                return $lbIngress['ip'];
+            },
+            $ingress['status']['loadBalancer']['ingress']
+        );
     }
 
     /**
